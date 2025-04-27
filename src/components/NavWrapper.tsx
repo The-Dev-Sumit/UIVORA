@@ -19,11 +19,25 @@ const NavWrapper = () => {
   );
 
   const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl: "/dashboard" });
+    const callbackUrl = process.env.NEXTAUTH_URL
+      ? `${process.env.NEXTAUTH_URL}/dashboard`
+      : "";
+
+    signIn("google", {
+      callbackUrl,
+      redirect: true,
+    });
   };
 
   const handleGitHubLogin = () => {
-    signIn("github", { callbackUrl: "/dashboard" });
+    const callbackUrl = process.env.NEXTAUTH_URL
+      ? `${process.env.NEXTAUTH_URL}/dashboard`
+      : "";
+
+    signIn("github", {
+      callbackUrl,
+      redirect: true,
+    });
   };
 
   if (shouldHideNav) return null;

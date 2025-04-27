@@ -1,8 +1,13 @@
+"use client";
+
 import ElementComponent from "@/components/ElementComponent";
 import { Poppins } from "next/font/google";
 import { Karla } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -15,6 +20,15 @@ const karla = Karla({
 });
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gray-800">
       <div className=" flex gap-2 flex-col items-center justify-center w-full  md:mt-10 lg:mt-20">

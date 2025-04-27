@@ -30,11 +30,16 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
+      console.log("SignIn callback started", {
+        user: user.email,
+        provider: account?.provider,
+      });
       try {
         await dbConnect();
         const existingUser = await User.findOne({ email: user.email });
 
         if (!existingUser) {
+          console.log("Creating new user");
           const newUser = new User({
             username: user.name,
             email: user.email,
@@ -42,6 +47,9 @@ export const authOptions: AuthOptions = {
             [account?.provider + "Id"]: user.id,
           });
           await newUser.save();
+          console.log("New user created successfully");
+        } else {
+          console.log("Existing user found");
         }
         return true;
       } catch (error) {
@@ -50,16 +58,35 @@ export const authOptions: AuthOptions = {
       }
     },
     async session({ session, token }) {
+      console.log("Session callback", { session });
       if (session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
     async jwt({ token, user }) {
+      console.log("JWT callback", { token, userId: user?.id });
       if (user) {
         token.id = user.id;
       }
       return token;
+    },
+    async redirect({ url, baseUrl }) {
+      // Get the base URL from environment variable or use baseUrl
+      const siteUrl = process.env.NEXTAUTH_URL || baseUrl;
+
+      // After successful sign in, always redirect to dashboard
+      if (url.includes("/api/auth/callback")) {
+        return `${siteUrl}/dashboard`;
+      }
+
+      // For sign in page, keep as is
+      if (url === siteUrl) {
+        return url;
+      }
+
+      // For all other cases, redirect to the requested URL
+      return url.startsWith(siteUrl) ? url : siteUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

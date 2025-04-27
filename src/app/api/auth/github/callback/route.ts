@@ -17,39 +17,66 @@ interface GitHubUserInfo {
   name?: string;
 }
 
+interface ErrorWithResponse extends Error {
+  response?: {
+    data?: any;
+  };
+}
+
 export async function GET(request: Request) {
   try {
+    console.log("1. Starting GitHub callback process");
     await dbConnect();
+    console.log("2. Database connected");
+
     const { searchParams } = new URL(request.url);
     const code = searchParams.get("code");
+    console.log("3. Auth code received:", code ? "Yes" : "No");
 
     if (!code) {
+      console.error("No code found in request");
       return NextResponse.json(
         { error: "Authorization code missing" },
         { status: 400 }
       );
     }
 
-    console.log("Env Vars:", {
-      GITHUB_ID: process.env.GITHUB_ID,
-      GITHUB_SECRET: process.env.GITHUB_SECRET,
+    // Log all environment variables (but mask sensitive data)
+    console.log("4. Environment check:", {
+      GITHUB_ID: process.env.GITHUB_ID ? "Set" : "Missing",
+      GITHUB_SECRET: process.env.GITHUB_SECRET ? "Set" : "Missing",
       NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+      JWT_SECRET: process.env.JWT_SECRET ? "Set" : "Missing",
     });
-    console.log("Request URL:", request.url);
 
     // Exchange code for tokens
-    const tokenResponse = await axios.post<GitHubTokenResponse>(
-      "https://github.com/login/oauth/access_token",
-      {
-        code,
-        client_id: process.env.GITHUB_ID as string,
-        client_secret: process.env.GITHUB_SECRET as string,
-        redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/github/callback`,
-      },
-      {
-        headers: { Accept: "application/json" },
-      }
-    );
+    console.log("5. Attempting to exchange code for token");
+    let tokenResponse;
+    try {
+      tokenResponse = await axios.post<GitHubTokenResponse>(
+        "https://github.com/login/oauth/access_token",
+        {
+          code,
+          client_id: process.env.GITHUB_ID as string,
+          client_secret: process.env.GITHUB_SECRET as string,
+          redirect_uri: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/github/callback`,
+        },
+        {
+          headers: { Accept: "application/json" },
+        }
+      );
+      console.log(
+        "6. Token response received:",
+        tokenResponse.data.access_token ? "Success" : "Failed"
+      );
+    } catch (err) {
+      const tokenError = err as ErrorWithResponse;
+      console.error(
+        "Token exchange error:",
+        tokenError.response?.data || tokenError.message
+      );
+      throw tokenError;
+    }
 
     const { access_token } = tokenResponse.data;
 
@@ -68,7 +95,7 @@ export async function GET(request: Request) {
       {
         $setOnInsert: {
           username: name || login,
-          email: email || `${login}@github.com`, // Fallback email if not provided
+          email: email || `${login}@github.com`,
           password: "",
           isOAuthUser: true,
         },
@@ -100,11 +127,18 @@ export async function GET(request: Request) {
       path: "/",
     });
     return response;
-  } catch (error) {
-    console.error("GitHub callback error:", error);
+  } catch (err) {
+    const error = err as ErrorWithResponse;
+    console.error("Detailed error:", {
+      message: error.message,
+      response: error.response?.data,
+      stack: error.stack,
+    });
+
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const signinUrl = new URL("/sign-in", baseUrl);
     signinUrl.searchParams.set("error", "auth_failed");
+    signinUrl.searchParams.set("details", error.message);
     console.log("Redirecting to error page:", signinUrl.toString());
     return NextResponse.redirect(signinUrl);
   }

@@ -22,6 +22,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
+  debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/",
     signOut: "/",
@@ -64,5 +65,7 @@ export const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  useSecureCookies: process.env.NODE_ENV === "production",
 };

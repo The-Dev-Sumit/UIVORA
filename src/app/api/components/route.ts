@@ -5,6 +5,7 @@ import { dbConnect } from "@/lib/mongodb";
 import { Component } from "@/models/Component";
 import User from "@/models/User";
 
+// API route for handling component operations
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);

@@ -2,11 +2,15 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 // User document ka interface
-export interface IUser {
+export interface IUser extends mongoose.Document {
   email: string;
   username: string;
   name: string;
   image: string;
+  password?: string;
+  isOAuthUser?: boolean;
+  googleId?: string;
+  githubId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,7 +30,7 @@ const userSchema = new mongoose.Schema<IUser>(
       unique: true,
       trim: true,
       minlength: [3, "Username must be at least 3 characters"],
-      maxlength: [30, "Username cannot exceed 30 characters"],
+      maxLength: [30, "Username cannot exceed 30 characters"],
       match: [
         /^[a-zA-Z0-9_-]+$/,
         "Username can only contain letters, numbers, underscores and hyphens",
@@ -37,12 +41,18 @@ const userSchema = new mongoose.Schema<IUser>(
       required: [true, "Name is required"],
       trim: true,
       minlength: [2, "Name must be at least 2 characters"],
-      maxlength: [50, "Name cannot exceed 50 characters"],
+      maxLength: [50, "Name cannot exceed 50 characters"],
     },
     image: {
       type: String,
       default: "",
     },
+    isOAuthUser: {
+      type: Boolean,
+      default: false,
+    },
+    googleId: String,
+    githubId: String,
   },
   {
     timestamps: true,
@@ -51,11 +61,13 @@ const userSchema = new mongoose.Schema<IUser>(
 
 // Password ko save karne se pehle hash karo
 userSchema.pre<IUser>("save", async function (next) {
-  if (!this.isModified("password") || this.isOAuthUser) return next();
+  if (!this.isModified("password") || this.isOAuthUser || !this.password)
+    return next();
 
   try {
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
     next();
   } catch (error) {
     next(error as Error);

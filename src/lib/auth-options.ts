@@ -30,6 +30,11 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async signIn({ user, account }) {
+      if (!user?.email) {
+        console.error("No email provided");
+        return false;
+      }
+
       try {
         // Connect to database
         await dbConnect();
@@ -39,20 +44,52 @@ export const authOptions: AuthOptions = {
 
         // If user doesn't exist, create new user
         if (!dbUser) {
-          dbUser = await User.create({
-            username: user.name,
-            email: user.email,
-            isOAuthUser: true,
-            [account?.provider + "Id"]: user.id,
-          });
+          console.log("Creating new user:", user.email);
+          try {
+            dbUser = await User.create({
+              username:
+                user.name?.replace(/\s+/g, "").toLowerCase() ||
+                user.email.split("@")[0],
+              name: user.name || user.email.split("@")[0],
+              email: user.email,
+              image: user.image || "",
+              isOAuthUser: true,
+              [account?.provider + "Id"]: user.id,
+            });
+            console.log("User created successfully:", dbUser.email);
+          } catch (error) {
+            console.error("Error creating user:", error);
+            // If username already exists, try with a random suffix
+            if (
+              error instanceof Error &&
+              "code" in error &&
+              error.code === 11000
+            ) {
+              const randomSuffix = Math.random().toString(36).substring(7);
+              dbUser = await User.create({
+                username: `${
+                  user.name?.replace(/\s+/g, "").toLowerCase() ||
+                  user.email.split("@")[0]
+                }_${randomSuffix}`,
+                name: user.name || user.email.split("@")[0],
+                email: user.email,
+                image: user.image || "",
+                isOAuthUser: true,
+                [account?.provider + "Id"]: user.id,
+              });
+              console.log("User created with random suffix:", dbUser.email);
+            } else {
+              throw error;
+            }
+          }
+        } else {
+          console.log("Existing user found:", dbUser.email);
         }
 
-        // Always return true to allow sign in
         return true;
       } catch (error) {
-        console.error("Database error:", error);
-        // Still return true to allow sign in even if DB operation fails
-        return true;
+        console.error("Fatal database error:", error);
+        return false;
       }
     },
     async session({ session, token }) {

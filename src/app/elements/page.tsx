@@ -183,11 +183,11 @@ const ElementsPage = () => {
         <p className="text-gray-600 mb-4">
           Start by creating components in the playground
         </p>
-        <a
+        <Link
           href="/dashboard"
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
           Login to create components
-        </a>
+        </Link>
       </div>
     );
   }
@@ -202,7 +202,14 @@ const ElementsPage = () => {
           <AiFillHome className="text-xl text-white" />
         </button>
         <div className="py-3">
-          <img src="/UIVORA.png" alt="UIVORA icon" className="mb-10" />
+          <Image
+            src="/UIVORA.png"
+            alt="UIVORA icon"
+            width={150}
+            height={50}
+            className="mb-10"
+            priority
+          />
           <div className="space-y-2">
             {COMPONENT_TAGS.map((section) => (
               <ElementSidebarButton

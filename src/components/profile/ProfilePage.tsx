@@ -34,6 +34,16 @@ interface UserProfile {
   socialLinks: SocialLink[];
 }
 
+interface ApiError {
+  response?: {
+    data?: {
+      error?: string;
+      details?: string;
+    };
+  };
+  message: string;
+}
+
 const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -135,11 +145,12 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
         toast.success("Profile updated successfully");
         setIsEditing(false);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating profile:", error);
+      const apiError = error as ApiError;
       const errorMessage =
-        error.response?.data?.error ||
-        error.response?.data?.details ||
+        apiError.response?.data?.error ||
+        apiError.response?.data?.details ||
         "Failed to update profile";
       toast.error(errorMessage);
     }
@@ -170,11 +181,12 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
         await fetchProfileData(); // Refresh data after save
         toast.success("Section updated successfully");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error updating section:", error);
+      const apiError = error as ApiError;
       const errorMessage =
-        error.response?.data?.error ||
-        error.response?.data?.details ||
+        apiError.response?.data?.error ||
+        apiError.response?.data?.details ||
         "Failed to update section";
       toast.error(errorMessage);
     }

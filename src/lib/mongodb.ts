@@ -27,7 +27,7 @@ if (!global.mongooseState) {
   global.mongooseState = cached;
 }
 
-async function dbConnect() {
+export async function dbConnect() {
   if (cached.conn) {
     return cached.conn;
   }

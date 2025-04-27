@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth-options";
 import dbConnect from "@/lib/mongodb";
 import Component from "@/models/Component";
 import { ObjectId } from "mongodb";
@@ -10,22 +10,12 @@ import { ComponentTag } from "@/components/TagSelectionModal";
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     await dbConnect();
-    const db = mongoose.connection.db;
-    if (!db) {
-      throw new Error("Database connection not established");
-    }
-
-    const components = await db
-      .collection("components")
-      .find({ userId: session.user.email })
-      .sort({ createdAt: -1 })
-      .toArray();
-
+    const components = await Component.find({ userId: session.user?.email });
     return NextResponse.json(components);
   } catch (error) {
     console.error("Error fetching components:", error);

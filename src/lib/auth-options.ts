@@ -22,6 +22,11 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
     }),
   ],
+  pages: {
+    signIn: "/",
+    signOut: "/",
+    error: "/error",
+  },
   callbacks: {
     async signIn({ user, account }) {
       try {

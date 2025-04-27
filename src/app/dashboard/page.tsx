@@ -21,6 +21,7 @@ import GetHelp from "@/components/help/GetHelp";
 import MyComponents from "@/components/my-components/MyComponents";
 import Loader from "@/components/loader/Loader";
 import { SiElement } from "react-icons/si";
+import Image from "next/image";
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -103,7 +104,14 @@ const DashboardPage = () => {
           <SiElement className="text-xl text-white" />
         </button>
         <div className="py-4">
-          <img src="UIVORA.png" alt="UIVORA icon" className="mb-10" />
+          <Image
+            src="/UIVORA.png"
+            alt="UIVORA icon"
+            width={150}
+            height={50}
+            className="mb-10"
+            priority
+          />
           <div className="space-y-2">
             <button
               onClick={() => setActivePage("playground")}

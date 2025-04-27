@@ -14,6 +14,11 @@ interface IUserProfile extends mongoose.Document {
   updatedAt: Date;
 }
 
+interface SocialLink {
+  platform: string;
+  url: string;
+}
+
 const userProfileSchema = new mongoose.Schema<IUserProfile>(
   {
     userId: {
@@ -67,11 +72,11 @@ const userProfileSchema = new mongoose.Schema<IUserProfile>(
 );
 
 // socialLinks array ke liye validation
-userProfileSchema.path("socialLinks").validate(function (links: any[]) {
+userProfileSchema.path("socialLinks").validate(function (links: SocialLink[]) {
   if (links.length > 10) return false;
-  const texts = links.map((link) => link.text.toLowerCase());
+  const texts = links.map((link) => link.platform.toLowerCase());
   return texts.length === new Set(texts).size;
-}, "Maximum 10 links allowed and link texts must be unique");
+}, "Maximum 10 links allowed and platform names must be unique");
 
 // Model ko export karo
 const UserProfile =

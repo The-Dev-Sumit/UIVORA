@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { dbConnect } from "@/lib/mongodb";
-import { Component } from "@/models/Component";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import dbConnect from "@/lib/mongodb";
+import Component from "@/models/Component";
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 import { ComponentTag } from "@/components/TagSelectionModal";
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.email) {

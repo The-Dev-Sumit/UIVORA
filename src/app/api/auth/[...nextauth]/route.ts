@@ -1,8 +1,13 @@
-import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
+import NextAuth, {
+  DefaultSession,
+  NextAuthOptions,
+  AuthOptions,
+} from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -18,7 +23,18 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const authOptions: NextAuthOptions = {
+interface Credentials {
+  email: string;
+  password: string;
+}
+
+interface UserResponse {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,

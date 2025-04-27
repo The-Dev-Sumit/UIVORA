@@ -15,7 +15,7 @@ import Loader from "@/components/loader/Loader";
 import Modal from "react-modal";
 import { IoWarning } from "react-icons/io5";
 import CancelButton from "@/components/CancelButton";
-import DeleteButton from "@/components/DeleteButton";
+import DeleteButton from "../DeleteButton";
 
 interface Component {
   _id: string;
@@ -225,7 +225,6 @@ const MyComponents = () => {
   return (
     <div className="w-full min-h-screen py-2">
       <div className="max-w-6xl mx-auto bg-transparent text-white rounded-lg shadow-lg p-4">
-
         {editingComponent ? (
           <div className="bg-gray-800 rounded-lg p-4">
             <div className="flex justify-between items-center">
@@ -345,7 +344,7 @@ const MyComponents = () => {
                           </style>
                           ${
                             editingComponent.code.useTailwind
-                              ? '<script src="https://cdn.tailwindcss.com"></script>'
+                              ? '<script async src="https://cdn.tailwindcss.com"></script>'
                               : ""
                           }
                         </head>
@@ -377,7 +376,9 @@ const MyComponents = () => {
                     noInline={true}>
                     <div className="w-full h-full flex items-center justify-center p-4">
                       {editingComponent.code.useTailwind && (
-                        <script src="https://cdn.tailwindcss.com" />
+                        <script
+                          async
+                          src="https://cdn.tailwindcss.com"></script>
                       )}
                       {!editingComponent.code.useTailwind &&
                         editingComponent.code.css && (
@@ -448,7 +449,7 @@ const MyComponents = () => {
                             </style>
                             ${
                               component.code.useTailwind
-                                ? '<script src="https://cdn.tailwindcss.com"></script>'
+                                ? '<script async src="https://cdn.tailwindcss.com"></script>'
                                 : ""
                             }
                           </head>
@@ -481,7 +482,9 @@ const MyComponents = () => {
                       noInline={true}>
                       <div className="w-full h-full flex items-center justify-center overflow-hidden bg-white">
                         {component.code.useTailwind && (
-                          <script src="https://cdn.tailwindcss.com" />
+                          <script
+                            async
+                            src="https://cdn.tailwindcss.com"></script>
                         )}
                         {!component.code.useTailwind && component.code.css && (
                           <style>{component.code.css}</style>
@@ -513,7 +516,10 @@ const MyComponents = () => {
           </p>
           <div className="flex justify-end gap-3">
             <CancelButton onClick={() => setDeleteModalOpen(false)} />
-            <DeleteButton onAnimationEnd={handleAnimationEnd} onClick={confirmDelete} />
+            <DeleteButton
+              onAnimationEnd={handleAnimationEnd}
+              onClick={confirmDelete}
+            />
           </div>
         </div>
       </Modal>

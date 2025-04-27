@@ -7,7 +7,7 @@ import { CircleFadingPlus } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { SiGithub } from "react-icons/si";
 import { AiOutlineClose } from "react-icons/ai";
-
+import Image from "next/image";
 
 const NavWrapper = () => {
   const pathname = usePathname();
@@ -32,10 +32,13 @@ const NavWrapper = () => {
     <>
       <nav className="flex w-full justify-between items-center p-4 z-30 fixed">
         <div className="py-2 text-[.7rem] font-semibold md:text-[.9rem] lg:px-3  lg:ml-16 ">
-          <img
-            src="UIVORA.png"
+          <Image
+            src="/UIVORA.png"
             alt="UIVORA icon"
+            width={224}
+            height={36}
             className="lg:w-[14rem] md:w-[14rem] w-[9rem] h-8 md:h-9"
+            priority
           />
         </div>
         <div className="lg:mr-16 mr-2">
@@ -63,7 +66,7 @@ const NavWrapper = () => {
               <button
                 onClick={handleGitHubLogin}
                 className="w-full flex items-center gap-2 py-2 px-4 cursor-pointer border-1 border-white hover:border-indigo-400 text-white rounded-md hover:bg-slate-800">
-                <SiGithub className="h-4 w-4"/>
+                <SiGithub className="h-4 w-4" />
                 <span>Continue with GitHub</span>
               </button>
               <button

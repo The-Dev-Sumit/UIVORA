@@ -363,16 +363,9 @@ const ReactPlayground = ({
   });
 
   const [activeEditor, setActiveEditor] = useState<"jsx" | "css">("jsx");
-  const [previewKey, setPreviewKey] = useState(0);
   const previewRef = React.useRef<HTMLDivElement>(null);
-  const rootRef = React.useRef<ReturnType<typeof createRoot> | null>(null);
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
-
-  const handlePreviewClick = () => {
-    setPreviewKey((prev) => prev + 1);
-  };
 
   // Update code when props change
   useEffect(() => {
@@ -428,7 +421,6 @@ const ReactPlayground = ({
 
   const handleSave = async (selectedTag: ComponentTag) => {
     try {
-      setIsSaving(true);
       const response = await axios.post("/api/user/components", {
         name: "React Component",
         type: "react",

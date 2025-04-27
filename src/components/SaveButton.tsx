@@ -1,10 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "@/styles/SaveButton.css";
 import { gsap } from "gsap";
-import { MorphSVGPlugin } from "gsap/all";
-
-// Register MorphSVGPlugin
-gsap.registerPlugin(MorphSVGPlugin);
 
 interface SaveButtonProps {
   handleSave: () => void;
@@ -17,6 +13,7 @@ const SaveButton: React.FC<SaveButtonProps> = ({
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const pathRef = useRef<SVGPathElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -53,13 +50,22 @@ const SaveButton: React.FC<SaveButtonProps> = ({
     }
   };
 
+  useEffect(() => {
+    // Initialize GSAP animation without MorphSVGPlugin
+    gsap.to(buttonRef.current, {
+      scale: isActive ? 0.95 : 1,
+      duration: 0.2,
+    });
+  }, [isActive]);
+
   return (
     <>
       <button
         className={`flex items-center justify-center relative px-2 py-2 bg-transparent text-[#C3C8DE]  cursor-pointer outline-none border-none ${
           isActive ? "active" : ""
         }`}
-        onClick={handleClick}>
+        onClick={handleClick}
+        ref={buttonRef}>
         <svg className="btn-layer absolute top-[-26px] rounded-lg w-full py-1 h-[4.5rem] z-[2] pointer-events-none fill-[#0E1822]">
           <path
             ref={pathRef}

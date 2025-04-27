@@ -24,12 +24,12 @@ if (!MONGO_URI) {
   );
 }
 
-let mongooseCache: CachedMongoose = global.mongooseCache || {
+const mongooseCache: CachedMongoose = global.mongooseCache || {
   conn: null,
   promise: null,
 };
 
-let mongoClientCache: CachedMongoClient = global.mongoClientCache || {
+const mongoClientCache: CachedMongoClient = global.mongoClientCache || {
   conn: null,
   promise: null,
 };

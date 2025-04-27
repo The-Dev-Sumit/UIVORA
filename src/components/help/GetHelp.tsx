@@ -90,7 +90,7 @@ const GetHelp = () => {
                     Is UiVora an open source project?
                   </h3>
                   <p className="text-gray-300">
-                    Yes, it's an open source — made by a junior developer.
+                    Yes, it&apos;s an open source — made by a junior developer.
                   </p>
                 </div>
               </div>

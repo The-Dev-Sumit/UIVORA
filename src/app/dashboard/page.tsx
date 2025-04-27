@@ -22,11 +22,6 @@ import MyComponents from "@/components/my-components/MyComponents";
 import Loader from "@/components/loader/Loader";
 import { SiElement } from "react-icons/si";
 import Image from "next/image";
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Dashboard",
-};
 
 const DashboardPage = () => {
   const router = useRouter();

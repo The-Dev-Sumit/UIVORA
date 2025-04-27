@@ -103,7 +103,7 @@ const ComponentDetails = () => {
     }
 
     try {
-      await navigator.clipboard.writeText(codeToCopy);
+    await navigator.clipboard.writeText(codeToCopy);
       setCopyStatus("code copied");
       setTimeout(() => setCopyStatus(""), 2000);
     } catch (error) {
@@ -202,19 +202,19 @@ const ComponentDetails = () => {
             TSX
           </button>
         );
-      } else {
-        tabs.push(
-          <button
-            key="jsx"
+    } else {
+      tabs.push(
+        <button
+          key="jsx"
             onClick={() => setActiveTab("jsx")}
-            className={`px-4 py-2 rounded-lg cursor-pointer ${
+          className={`px-4 py-2 rounded-lg cursor-pointer ${
               activeTab === "jsx"
-                ? "bg-gray-900 text-white"
-                : "bg-gray-700 text-gray-200"
-            }`}>
+              ? "bg-gray-900 text-white"
+              : "bg-gray-700 text-gray-200"
+          }`}>
             JSX
-          </button>
-        );
+        </button>
+      );
       }
 
       // Show CSS/Tailwind tab for React components

@@ -10,11 +10,11 @@ declare global {
   var mongooseState: MongooseState | undefined;
 }
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGO_URI = process.env.MONGO_URI;
 
-if (!MONGODB_URI) {
+if (!MONGO_URI) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define the MONGO_URI environment variable inside .env.local"
   );
 }
 
@@ -37,7 +37,7 @@ export async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGO_URI!, opts).then((mongoose) => {
       return mongoose;
     });
   }
@@ -62,7 +62,7 @@ export async function getMongoClient() {
     return mongoClientCache;
   }
 
-  const client = new MongoClient(MONGODB_URI!);
+  const client = new MongoClient(MONGO_URI!);
   await client.connect();
   mongoClientCache = client;
   return client;

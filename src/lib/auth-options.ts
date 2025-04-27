@@ -31,12 +31,10 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async signIn({ user, account }) {
       try {
-        console.log("SignIn callback started for user:", user.email);
         await dbConnect();
         const existingUser = await User.findOne({ email: user.email });
 
         if (!existingUser) {
-          console.log("Creating new user");
           const newUser = new User({
             username: user.name,
             email: user.email,
@@ -44,9 +42,6 @@ export const authOptions: AuthOptions = {
             [account?.provider + "Id"]: user.id,
           });
           await newUser.save();
-          console.log("New user created successfully");
-        } else {
-          console.log("Existing user found");
         }
         return true;
       } catch (error) {
@@ -55,26 +50,16 @@ export const authOptions: AuthOptions = {
       }
     },
     async session({ session, token }) {
-      console.log("Session callback called");
       if (session.user) {
         session.user.id = token.id as string;
       }
       return session;
     },
     async jwt({ token, user }) {
-      console.log("JWT callback called");
       if (user) {
         token.id = user.id;
       }
       return token;
-    },
-    async redirect({ url, baseUrl }) {
-      console.log("Redirect callback called with:", { url, baseUrl });
-
-      // Always redirect to dashboard after sign in
-      const dashboardUrl = `${baseUrl}/dashboard`;
-      console.log("Redirecting to dashboard:", dashboardUrl);
-      return dashboardUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

@@ -61,6 +61,14 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) {
+        if (url.includes("callback") || url === baseUrl) {
+          return `${baseUrl}/dashboard`;
+        }
+      }
+      return url;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {

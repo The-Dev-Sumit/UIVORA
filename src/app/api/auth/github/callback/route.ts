@@ -115,7 +115,7 @@ export async function GET(request: Request) {
       { expiresIn: "1h" }
     );
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     const dashboardUrl = new URL("/dashboard", baseUrl);
     console.log("Redirecting to:", dashboardUrl.toString());
 

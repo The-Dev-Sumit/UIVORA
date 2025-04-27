@@ -4,7 +4,6 @@ import "./globals.css";
 import NavWrapper from "@/components/NavWrapper";
 import { SessionProvider } from "next-auth/react";
 import Modal from "react-modal";
-import { useEffect } from "react";
 
 // react-modal ke liye app element set karo
 if (typeof window !== "undefined") {

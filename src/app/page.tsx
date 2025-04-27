@@ -3,6 +3,12 @@ import { Poppins } from "next/font/google";
 import { Karla } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Uivora",
+  description: "The Ultimate UI Component Library.",
+};
 
 const poppins = Poppins({
   subsets: ["latin"],

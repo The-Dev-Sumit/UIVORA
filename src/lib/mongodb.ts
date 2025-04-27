@@ -1,106 +1,69 @@
+import mongoose from "mongoose";
 import { MongoClient } from "mongodb";
-import mongoose, { Mongoose } from "mongoose";
+
+type MongooseState = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
 
 declare global {
-  var mongooseCache: CachedMongoose | undefined;
-  var mongoClientCache: CachedMongoClient | undefined;
+  var mongooseState: MongooseState | undefined;
 }
 
-interface CachedMongoose {
-  conn: Mongoose | null;
-  promise: Promise<Mongoose> | null;
-}
+const MONGODB_URI = process.env.MONGODB_URI;
 
-interface CachedMongoClient {
-  conn: MongoClient | null;
-  promise: Promise<MongoClient> | null;
-}
-
-const MONGO_URI: string | undefined = process.env.MONGO_URI;
-
-if (!MONGO_URI) {
+if (!MONGODB_URI) {
   throw new Error(
-    "Please define the MONGO_URI environment variable inside .env"
+    "Please define the MONGODB_URI environment variable inside .env.local"
   );
 }
 
-const mongooseCache: CachedMongoose = global.mongooseCache || {
+let cached: MongooseState = global.mongooseState || {
   conn: null,
   promise: null,
 };
 
-const mongoClientCache: CachedMongoClient = global.mongoClientCache || {
-  conn: null,
-  promise: null,
-};
-
-if (!global.mongooseCache) {
-  global.mongooseCache = mongooseCache;
+if (!global.mongooseState) {
+  global.mongooseState = cached;
 }
 
-if (!global.mongoClientCache) {
-  global.mongoClientCache = mongoClientCache;
-}
+async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
+  }
 
-// For Mongoose ORM
-export async function dbConnect(): Promise<Mongoose> {
-  if (mongooseCache.conn) return mongooseCache.conn;
-
-  if (!mongooseCache.promise) {
-    const opts: mongoose.ConnectOptions = {
+  if (!cached.promise) {
+    const opts = {
       bufferCommands: false,
-      serverSelectionTimeoutMS: 5000,
-      maxPoolSize: 10,
     };
 
-    mongooseCache.promise = mongoose
-      .connect(MONGO_URI!, opts)
-      .then((mongoose) => {
-        console.log("MongoDB connection established (Mongoose)");
-        return mongoose;
-      })
-      .catch((err) => {
-        console.error("MongoDB connection failed, retrying...", err);
-        mongooseCache.promise = null;
-        return dbConnect(); // Dobara try karo
-      });
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
+      return mongoose;
+    });
   }
 
   try {
-    mongooseCache.conn = await mongooseCache.promise;
-    return mongooseCache.conn;
-  } catch (error) {
-    mongooseCache.promise = null;
-    throw error;
-  }
-}
-
-// For Native MongoDB Driver
-export async function connectToDatabase() {
-  if (mongoClientCache.conn) {
-    return { db: mongoClientCache.conn.db() };
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
   }
 
-  if (!mongoClientCache.promise) {
-    mongoClientCache.promise = MongoClient.connect(MONGO_URI!)
-      .then((client) => {
-        console.log("MongoDB connection established (Native)");
-        return client;
-      })
-      .catch((err) => {
-        console.error("MongoDB connection failed, retrying...", err);
-        mongoClientCache.promise = null;
-        throw err;
-      });
-  }
-
-  try {
-    mongoClientCache.conn = await mongoClientCache.promise;
-    return { db: mongoClientCache.conn.db() };
-  } catch (error) {
-    mongoClientCache.promise = null;
-    throw error;
-  }
+  return cached.conn;
 }
 
 export default dbConnect;
+
+// For raw MongoDB operations
+let mongoClientCache: MongoClient | null = null;
+
+export async function getMongoClient() {
+  if (mongoClientCache) {
+    return mongoClientCache;
+  }
+
+  const client = new MongoClient(MONGODB_URI!);
+  await client.connect();
+  mongoClientCache = client;
+  return client;
+}

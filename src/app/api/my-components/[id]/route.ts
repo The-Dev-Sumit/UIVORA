@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import dbConnect from "@/lib/mongodb";
-import Component from "@/models/Component";
+import Component, { IComponent } from "@/models/Component";
 
 export async function DELETE(
   request: Request,

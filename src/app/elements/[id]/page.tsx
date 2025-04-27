@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { FaCopy, FaUser, FaCalendar } from "react-icons/fa";
+import { FaUser, FaCalendar } from "react-icons/fa";
 import { BiCopy } from "react-icons/bi";
 import { IoArrowBackSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -50,7 +50,7 @@ const ComponentDetails = () => {
 
   useEffect(() => {
     fetchComponent();
-  }, []);
+  }, [params.id]);
 
   const fetchComponent = async () => {
     try {

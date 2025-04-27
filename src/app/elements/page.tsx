@@ -23,7 +23,9 @@ import { MdWallpaper } from "react-icons/md";
 import { COMPONENT_TAGS, ComponentTag } from "@/components/TagSelectionModal";
 import { FaCode } from "react-icons/fa";
 import { AiFillHome } from "react-icons/ai";
-
+import Link from "next/link";
+import { FaUser } from "react-icons/fa";
+import Image from "next/image";
 
 interface Component {
   _id: string;

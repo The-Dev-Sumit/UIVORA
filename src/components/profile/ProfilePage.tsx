@@ -18,6 +18,7 @@ import { GiCrossMark } from "react-icons/gi";
 import { MdOutlineLink } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface SocialLink {
   text: string;
@@ -376,8 +377,6 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
     </svg>
   );
 
-
-
   return (
     <div className="w-full min-h-screen p-4">
       <div className="max-w-4xl mx-auto bg-gray-800 text-white rounded-lg shadow-lg p-6">
@@ -405,15 +404,15 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
             <div className="relative group">
               <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
                 {profile.avatar ? (
-                  <img
+                  <Image
                     src={profile.avatar}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
+                    alt={`${profile.username}'s avatar`}
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover"
                   />
                 ) : (
-                  <span className="text-4xl text-gray-300">
-                    {profile.username.charAt(0).toUpperCase()}
-                  </span>
+                  <FaCircleUser className="w-24 h-24 text-gray-400" />
                 )}
                 {isOwnProfile && isEditing && (
                   <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">

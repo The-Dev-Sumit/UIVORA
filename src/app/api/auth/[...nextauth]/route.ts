@@ -2,6 +2,8 @@ import NextAuth, {
   DefaultSession,
   NextAuthOptions,
   AuthOptions,
+  Session,
+  User as NextAuthUser,
 } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
@@ -73,13 +75,13 @@ export const authOptions: AuthOptions = {
         return false;
       }
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
       if (session.user) {
-        session.user.id = token.id;
+        session.user.id = token.id as string;
       }
       return session;
     },
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user }: { token: JWT; user: NextAuthUser | undefined }) {
       if (user) {
         token.id = user.id;
       }

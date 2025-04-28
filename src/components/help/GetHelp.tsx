@@ -79,16 +79,16 @@ const ContactContent: React.FC = () => (
       </p>
     </div>
     <div className="bg-gray-700/50 p-4 rounded-lg">
-      <h3 className="text-lg font-semibold mb-2">GitHub Issues</h3>
+      <h3 className="text-lg font-semibold mb-2">GitHub Contributions</h3>
       <p className="text-gray-300">
-        Found a bug? Report it on our GitHub repository:
+        Found a bug? Report it on my GitHub repository or you can contribute to the project:
         <a
           href="https://github.com/The-Dev-Sumit"
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-400 hover:text-blue-300 ml-2">
           <FaGithub className="inline mr-1" />
-          GitHub Issues
+          GitHub Repository
         </a>
       </p>
     </div>

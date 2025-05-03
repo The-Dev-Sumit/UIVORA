@@ -139,9 +139,9 @@ const DashboardPage = () => {
         <div className="w-full min-h-screen main-content">
           {activePage === "playground" ? (
             <>
-              <div className="w-full py-1 px-10 flex flex-row gap-16">
+              <div className="w-full py-1 px-8 flex flex-row gap-14">
                 {/* HTML Section */}
-                <div className="flex flex-col justify-center items-center ml-44">
+                <div className="flex flex-col justify-center items-center ml-32">
                   <button
                     className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
                       activeTab === "html"
@@ -250,7 +250,7 @@ const DashboardPage = () => {
                     </button>
                   </div>
                 </div>
-                <div className="mt-5 ml-[6vw]">
+                <div className="mt-5 ml-[4vw]">
                   <ProfileDropdown
                     username={myName}
                     onLogout={handleLogout}

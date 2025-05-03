@@ -394,7 +394,7 @@ const MyComponents = () => {
                           </style>
                           ${
                             editingComponent.code.useTailwind
-                              ? '<script async src="https://cdn.tailwindcss.com"></script>'
+                              ? '<script async src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>'
                               : ""
                           }
                         </head>
@@ -428,7 +428,7 @@ const MyComponents = () => {
                       {editingComponent.code.useTailwind && (
                         <script
                           async
-                          src="https://cdn.tailwindcss.com"></script>
+                          src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                       )}
                       {!editingComponent.code.useTailwind &&
                         editingComponent.code.css && (
@@ -499,7 +499,7 @@ const MyComponents = () => {
                             </style>
                             ${
                               component.code.useTailwind
-                                ? '<script async src="https://cdn.tailwindcss.com"></script>'
+                                ? '<script async src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>'
                                 : ""
                             }
                           </head>
@@ -535,7 +535,7 @@ const MyComponents = () => {
                         {component.code.useTailwind && (
                           <script
                             async
-                            src="https://cdn.tailwindcss.com"></script>
+                            src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                         )}
                         {!component.code.useTailwind && component.code.css && (
                           <style>{component.code.css}</style>

@@ -549,7 +549,7 @@ const ReactPlayground = ({
                     <div className="max-w-full max-h-full flex flex-col items-center justify-center">
                       {/* Inject Tailwind CDN if enabled */}
                       {tailwindEnabled && (
-                        <script src="https://cdn.tailwindcss.com"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                       )}
                       {/* Inject user CSS */}
                       <style>{code.css}</style>

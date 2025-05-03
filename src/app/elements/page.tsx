@@ -275,7 +275,7 @@ const ElementsPage = () => {
                               ${
                                 component.code.css
                                   ? ""
-                                  : '<script src="https://cdn.tailwindcss.com"></script>'
+                                  : '<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>'
                               }
                             </head>
                             <body>
@@ -319,7 +319,7 @@ const ElementsPage = () => {
                                 ${
                                   component.metadata?.useTailwind
                                     ? `const tailwindScript = document.createElement('script');
-                                      tailwindScript.src = 'https://cdn.tailwindcss.com';
+                                      tailwindScript.src = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';
                                       document.head.appendChild(tailwindScript);`
                                     : ""
                                 }

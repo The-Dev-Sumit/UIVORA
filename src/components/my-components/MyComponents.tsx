@@ -16,6 +16,7 @@ import Modal from "react-modal";
 import { IoWarning } from "react-icons/io5";
 import CancelButton from "@/components/CancelButton";
 import DeleteButton from "../DeleteButton";
+import styled from "styled-components";
 
 interface Component {
   _id: string;
@@ -478,6 +479,7 @@ const MyComponents = () => {
                         React,
                         useState: React.useState,
                         useEffect: React.useEffect,
+                        styled,
                       }}
                       noInline={true}>
                       <div className="w-full h-full flex items-center justify-center overflow-hidden bg-white">

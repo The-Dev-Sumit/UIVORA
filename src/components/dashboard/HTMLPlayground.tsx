@@ -32,14 +32,14 @@ const HTMLPlayground = ({ useTailwind, language }: HTMLPlaygroundProps) => {
 }
 
 const user: User = {
-  name: "John",
-  age: 30
+  name: "The Great Sumit",
+  age: 23
 };
 
 console.log(user);`
         : `const user = {
-  name: "John",
-  age: 30
+  name: "The Great Sumit",
+  age: 23
 };
 
 console.log(user);`,
@@ -108,17 +108,13 @@ console.log(user);`,
               }`}>
               HTML
             </button>
-            {!useTailwind && (
-              <button
-                onClick={() => setActiveEditor("css")}
-                className={`px-3 py-[3px] cursor-pointer rounded-3xl ${
-                  activeEditor === "css"
-                    ? "bg-gray-950/45 text-amber-100/80"
-                    : ""
-                }`}>
-                CSS
-              </button>
-            )}
+            <button
+              onClick={() => setActiveEditor("css")}
+              className={`px-3 py-[3px] cursor-pointer rounded-3xl ${
+                activeEditor === "css" ? "bg-gray-950/45 text-amber-100/80" : ""
+              }`}>
+              CSS
+            </button>
             <button
               onClick={() => setActiveEditor("js")}
               className={`px-3 py-[3px] cursor-pointer rounded-3xl ${
@@ -126,6 +122,13 @@ console.log(user);`,
               }`}>
               {language === "ts" ? "TypeScript" : "JavaScript"}
             </button>
+            {!useTailwind && (
+              <button
+                className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400 rounded-4xl ml-4"
+                onClick={() => setIsTagModalOpen(true)}>
+                <span>Tailwind CSS</span>
+              </button>
+            )}
           </div>
           <div className="flex-1 min-h-0">
             {activeEditor === "html" ? (
@@ -191,23 +194,24 @@ console.log(user);`,
             <div className="flex-1">
               <iframe
                 className="w-full h-full"
-                srcDoc={`                  <!DOCTYPE html>
+                srcDoc={`<!DOCTYPE html>
                   <html>
                     <head>
                       ${
                         useTailwind
                           ? '<script src="https://cdn.tailwindcss.com"></script>'
-                          : `<style>
-                              body {
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                min-height: 100vh;
-                                margin: 0;
-                              }
-                              ${code.css}
-                            </style>`
+                          : ""
                       }
+                      <style>
+                        body {
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          min-height: 100vh;
+                          margin: 0;
+                        }
+                        ${code.css}
+                      </style>
                       ${
                         language === "ts"
                           ? '<script src="https://unpkg.com/typescript@latest/lib/typescriptServices.js"></script>'
@@ -248,7 +252,9 @@ console.log(user);`,
       <TagSelectionModal
         isOpen={isTagModalOpen}
         onClose={() => setIsTagModalOpen(false)}
-        onSelectTag={handleSave}
+        onSelectTag={(selectedTag) => {
+          setIsTagModalOpen(false);
+        }}
       />
     </div>
   );

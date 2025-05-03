@@ -139,9 +139,8 @@ const DashboardPage = () => {
         <div className="w-full min-h-screen main-content">
           {activePage === "playground" ? (
             <>
-              {/* Taskbar ka section */}
               <div className="w-full py-1 px-10 flex flex-row gap-16">
-                {/* HTML wala section */}
+                {/* HTML Section */}
                 <div className="flex flex-col justify-center items-center ml-44">
                   <button
                     className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
@@ -182,47 +181,17 @@ const DashboardPage = () => {
                       <TbBrandTypescript className="w-5 h-5" />
                       <span>ts</span>
                     </button>
-                    <div className="flex items-center gap-2">
+                    {!htmlUseTailwind && (
                       <button
-                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 relative group ${
-                          !htmlUseTailwind
-                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                            : "text-white/85 font-semibold"
-                        }
-                          ${
-                            htmlUseTailwind
-                              ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                              : "text-white/85 font-semibold"
-                          }
-                        `}
-                        onClick={() =>
-                          activeTab === "html" &&
-                          setHtmlUseTailwind(!htmlUseTailwind)
-                        }
-                        disabled={activeTab !== "html"}>
-                        {!htmlUseTailwind ? (
-                          <>
-                            <FaCss3 className="w-4 h-4" />
-                            <span>css</span>
-                            <span className="absolute w-28 -top-7 left-20 transform -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                              Click for Tailwind
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <SiTailwindcss className="w-5 h-5 text-blue-400" />
-                            <span>tailwind css</span>
-                            <span className="absolute left-20 transform -translate-x-1/2 w-20 -top-7 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                              Click for CSS
-                            </span>
-                          </>
-                        )}
+                        className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400  rounded-4xl"
+                        onClick={() => setHtmlUseTailwind(true)}>
+                        <SiTailwindcss className="w-5 h-5 text-blue-400" />
+                        <span>Tailwind CSS</span>
                       </button>
-                    </div>
+                    )}
                   </div>
                 </div>
-
-                {/* React wala section */}
+                {/* React Section */}
                 <div className="flex flex-col justify-center items-center">
                   <button
                     className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
@@ -236,9 +205,9 @@ const DashboardPage = () => {
                     <FaReact className="w-5 h-5 text-blue-400" />
                     <span>react</span>
                   </button>
-                  <div className="flex flex-row items-center gap-4 mt-4">
+                  <div className="flex flex-row items-center gap-5 mt-4">
                     <button
-                      className={`capitalize w-fit link-underline cursor-pointer px-3 py-1 flex items-center gap-1 ${
+                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
                         activeTab === "react" && reactSubTab === "jsx"
                           ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
                           : "font-semibold text-white/85"
@@ -247,11 +216,11 @@ const DashboardPage = () => {
                         activeTab === "react" && setReactSubTab("jsx")
                       }
                       disabled={activeTab !== "react"}>
-                      <FaReact className="w-5 h-5 text-blue-400" />
+                      <TbBrandReact className="w-5 h-5 text-blue-400" />
                       <span>jsx</span>
                     </button>
                     <button
-                      className={`capitalize w-fit link-underline cursor-pointer px-3 py-1 flex items-center gap-1 ${
+                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
                         activeTab === "react" && reactSubTab === "tsx"
                           ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
                           : "font-semibold text-white/85"
@@ -260,44 +229,17 @@ const DashboardPage = () => {
                         activeTab === "react" && setReactSubTab("tsx")
                       }
                       disabled={activeTab !== "react"}>
-                      <TbBrandReact className="w-5 h-5 text-blue-400" />
+                      <TbBrandTypescript className="w-5 h-5" />
                       <span>tsx</span>
                     </button>
-                    <button
-                      className={`capitalize w-fit link-underline cursor-pointer px-3 py-1 flex items-center gap-1 relative group ${
-                        !reactUseTailwind
-                          ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                          : "text-white/85 font-semibold"
-                      }
-                        ${
-                          reactUseTailwind
-                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                            : "text-white/85 font-semibold"
-                        }
-                      `}
-                      onClick={() =>
-                        activeTab === "react" &&
-                        setReactUseTailwind(!reactUseTailwind)
-                      }
-                      disabled={activeTab !== "react"}>
-                      {!reactUseTailwind ? (
-                        <>
-                          <FaCss3 className="w-4 h-4" />
-                          <span>css</span>
-                          <span className="absolute w-28 -top-9 left-20 transform -translate-x-1/2 text-xs text-gray-400 tracking-wide opacity-0 group-hover:opacity-100 transition-opacity">
-                            Click for Tailwind Css
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <SiTailwindcss className="w-5 h-5 text-blue-400" />
-                          <span>tailwind css</span>
-                          <span className="absolute w-28 -top-7 left-20 transform tracking-wide -translate-x-1/2 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                            Click for CSS
-                          </span>
-                        </>
-                      )}
-                    </button>
+                    {!reactUseTailwind && (
+                      <button
+                        className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400  rounded-4xl"
+                        onClick={() => setReactUseTailwind(true)}>
+                        <SiTailwindcss className="w-5 h-5 text-blue-400" />
+                        <span>Enable Tailwind CSS</span>
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="mt-5 ml-[6vw]">
@@ -310,28 +252,27 @@ const DashboardPage = () => {
                 </div>
               </div>
 
-              <div className="mt-5 w-full">
-                {activeTab === "html" && (
+              <div className="w-full flex flex-col items-center justify-center">
+                {activeTab === "html" ? (
                   <HTMLPlayground
                     useTailwind={htmlUseTailwind}
                     language={htmlSubTab}
                   />
-                )}
-                {activeTab === "react" && (
+                ) : (
                   <ReactPlayground
-                    isTypeScript={reactSubTab === "tsx"}
                     useTailwind={reactUseTailwind}
+                    isTypeScript={reactSubTab === "tsx"}
                   />
                 )}
               </div>
             </>
           ) : activePage === "profile" ? (
-            <ProfilePage />
+            <ProfilePage username={myName} />
           ) : activePage === "my-components" ? (
             <MyComponents />
-          ) : (
+          ) : activePage === "help" ? (
             <GetHelp />
-          )}
+          ) : null}
         </div>
       </MainContent>
     </div>

@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import TagSelectionModal, { ComponentTag } from "../TagSelectionModal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import styled from "styled-components";
 
 type CodeState = {
   jsx: string;
@@ -367,6 +368,9 @@ const ReactPlayground = ({
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const router = useRouter();
 
+  // Add a state for enabling Tailwind
+  const [tailwindEnabled, setTailwindEnabled] = useState(initialUseTailwind);
+
   // Update code when props change
   useEffect(() => {
     setCode((prev) => ({
@@ -417,6 +421,7 @@ const ReactPlayground = ({
     useState: React.useState,
     useEffect: React.useEffect,
     useRef: React.useRef,
+    styled,
   };
 
   const handleSave = async (selectedTag: ComponentTag) => {
@@ -470,15 +475,18 @@ const ReactPlayground = ({
               }`}>
               {isTypeScript ? "TSX" : "JSX"}
             </button>
-            {!initialUseTailwind && (
+            <button
+              onClick={() => setActiveEditor("css")}
+              className={`px-3 py-[3px] cursor-pointer rounded-3xl ${
+                activeEditor === "css" ? "bg-gray-950/45 text-amber-100/80" : ""
+              }`}>
+              CSS
+            </button>
+            {!tailwindEnabled && (
               <button
-                onClick={() => setActiveEditor("css")}
-                className={`px-3 py-[3px] cursor-pointer rounded-3xl ${
-                  activeEditor === "css"
-                    ? "bg-gray-950/45 text-amber-100/80"
-                    : ""
-                }`}>
-                CSS
+                className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400 px-5 py-1 rounded-4xl ml-4"
+                onClick={() => setTailwindEnabled(true)}>
+                <span>Enable Tailwind CSS</span>
               </button>
             )}
           </div>
@@ -546,6 +554,12 @@ const ReactPlayground = ({
                   <LiveError className="text-red-500 mb-4" />
                   <div className="flex justify-center items-center min-h-[calc(100vh-200px)] p-4 overflow-auto">
                     <div className="max-w-full max-h-full flex flex-col items-center justify-center">
+                      {/* Inject Tailwind CDN if enabled */}
+                      {tailwindEnabled && (
+                        <script src="https://cdn.tailwindcss.com"></script>
+                      )}
+                      {/* Inject user CSS */}
+                      <style>{code.css}</style>
                       <LivePreview />
                     </div>
                   </div>

@@ -46,6 +46,7 @@ const MyComponents = () => {
     null
   );
   const [isAnimating, setIsAnimating] = useState(false);
+  const [activeEditTab, setActiveEditTab] = useState<string>("html");
 
   const handleAnimationEnd = (isAnimating: boolean) => {
     setIsAnimating(isAnimating);
@@ -251,13 +252,71 @@ const MyComponents = () => {
                 </button>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
-              <div className="space-y-2">
+            <div className="flex gap-8 mt-4">
+              <div className="flex-1">
+                <div className="flex gap-2 mb-2">
+                  {editingComponent.type === "html" ? (
+                    <>
+                      <button
+                        className={`px-3 py-1 rounded-md ${
+                          activeEditTab === "html"
+                            ? "bg-gray-900 text-white"
+                            : "bg-gray-700 text-gray-200"
+                        }`}
+                        onClick={() => setActiveEditTab("html")}>
+                        HTML
+                      </button>
+                      {!editingComponent.code.useTailwind && (
+                        <button
+                          className={`px-3 py-1 rounded-md ${
+                            activeEditTab === "css"
+                              ? "bg-gray-900 text-white"
+                              : "bg-gray-700 text-gray-200"
+                          }`}
+                          onClick={() => setActiveEditTab("css")}>
+                          CSS
+                        </button>
+                      )}
+                      <button
+                        className={`px-3 py-1 rounded-md ${
+                          activeEditTab === "js"
+                            ? "bg-gray-900 text-white"
+                            : "bg-gray-700 text-gray-200"
+                        }`}
+                        onClick={() => setActiveEditTab("js")}>
+                        {editingComponent.code.language === "ts"
+                          ? "TypeScript"
+                          : "JavaScript"}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className={`px-3 py-1 rounded-md ${
+                          activeEditTab === "jsx"
+                            ? "bg-gray-900 text-white"
+                            : "bg-gray-700 text-gray-200"
+                        }`}
+                        onClick={() => setActiveEditTab("jsx")}>
+                        JSX
+                      </button>
+                      {!editingComponent.code.useTailwind && (
+                        <button
+                          className={`px-3 py-1 rounded-md ${
+                            activeEditTab === "css"
+                              ? "bg-gray-900 text-white"
+                              : "bg-gray-700 text-gray-200"
+                          }`}
+                          onClick={() => setActiveEditTab("css")}>
+                          CSS
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
                 {editingComponent.type === "html" ? (
                   <>
-                    <div>
-                      <h3 className="text-white mb-2">HTML</h3>
+                    {activeEditTab === "html" && (
                       <Editor
                         height="200px"
                         defaultLanguage="html"
@@ -265,10 +324,9 @@ const MyComponents = () => {
                         onChange={(value) => handleCodeChange(value, "html")}
                         theme="vs-dark"
                       />
-                    </div>
-                    {!editingComponent.code.useTailwind && (
-                      <div>
-                        <h3 className="text-white mb-2">CSS</h3>
+                    )}
+                    {activeEditTab === "css" &&
+                      !editingComponent.code.useTailwind && (
                         <Editor
                           height="200px"
                           defaultLanguage="css"
@@ -276,14 +334,8 @@ const MyComponents = () => {
                           onChange={(value) => handleCodeChange(value, "css")}
                           theme="vs-dark"
                         />
-                      </div>
-                    )}
-                    <div>
-                      <h3 className="text-white mb-2">
-                        {editingComponent.code.language === "ts"
-                          ? "TypeScript"
-                          : "JavaScript"}
-                      </h3>
+                      )}
+                    {activeEditTab === "js" && (
                       <Editor
                         height="200px"
                         defaultLanguage={
@@ -293,12 +345,11 @@ const MyComponents = () => {
                         onChange={(value) => handleCodeChange(value, "js")}
                         theme="vs-dark"
                       />
-                    </div>
+                    )}
                   </>
                 ) : (
                   <>
-                    <div>
-                      <h3 className="text-white mb-2">JSX</h3>
+                    {activeEditTab === "jsx" && (
                       <Editor
                         height="400px"
                         defaultLanguage="javascript"
@@ -306,10 +357,9 @@ const MyComponents = () => {
                         onChange={(value) => handleCodeChange(value, "jsx")}
                         theme="vs-dark"
                       />
-                    </div>
-                    {!editingComponent.code.useTailwind && (
-                      <div>
-                        <h3 className="text-white mb-2">CSS</h3>
+                    )}
+                    {activeEditTab === "css" &&
+                      !editingComponent.code.useTailwind && (
                         <Editor
                           height="400px"
                           defaultLanguage="css"
@@ -317,12 +367,11 @@ const MyComponents = () => {
                           onChange={(value) => handleCodeChange(value, "css")}
                           theme="vs-dark"
                         />
-                      </div>
-                    )}
+                      )}
                   </>
                 )}
               </div>
-              <div className="bg-white p-4 h-1/2 rounded-lg flex items-center justify-center">
+              <div className="flex-1">
                 {editingComponent.type === "html" ? (
                   <iframe
                     className="w-full h-screen"

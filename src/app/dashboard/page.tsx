@@ -181,14 +181,19 @@ const DashboardPage = () => {
                       <TbBrandTypescript className="w-5 h-5" />
                       <span>ts</span>
                     </button>
-                    {!htmlUseTailwind && (
-                      <button
-                        className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400  rounded-4xl"
-                        onClick={() => setHtmlUseTailwind(true)}>
-                        <SiTailwindcss className="w-5 h-5 text-blue-400" />
-                        <span>Tailwind CSS</span>
-                      </button>
-                    )}
+                    <button
+                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold rounded-4xl
+                        ${
+                          htmlUseTailwind
+                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
+                            : "font-semibold text-white/85"
+                        }
+                      `}
+                      onClick={() => setHtmlUseTailwind(true)}
+                      disabled={htmlUseTailwind}>
+                      <SiTailwindcss className="w-5 h-5 text-blue-400" />
+                      <span>Tailwind CSS</span>
+                    </button>
                   </div>
                 </div>
                 {/* React Section */}
@@ -232,14 +237,19 @@ const DashboardPage = () => {
                       <TbBrandTypescript className="w-5 h-5" />
                       <span>tsx</span>
                     </button>
-                    {!reactUseTailwind && (
-                      <button
-                        className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400  rounded-4xl"
-                        onClick={() => setReactUseTailwind(true)}>
-                        <SiTailwindcss className="w-5 h-5 text-blue-400" />
-                        <span>Enable Tailwind CSS</span>
-                      </button>
-                    )}
+                    <button
+                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold rounded-4xl
+                        ${
+                          reactUseTailwind
+                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
+                            : "font-semibold text-white/85"
+                        }
+                      `}
+                      onClick={() => setReactUseTailwind(true)}
+                      disabled={reactUseTailwind}>
+                      <SiTailwindcss className="w-5 h-5 text-blue-400" />
+                      <span>Tailwind CSS</span>
+                    </button>
                   </div>
                 </div>
                 <div className="mt-5 ml-[6vw]">

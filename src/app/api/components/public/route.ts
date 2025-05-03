@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/mongodb";
 import mongoose from "mongoose";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "15");
+    const skip = (page - 1) * limit;
+
     await dbConnect();
     const db = mongoose.connection.db;
     if (!db) {
@@ -45,6 +50,12 @@ export async function GET() {
         },
         {
           $sort: { createdAt: -1 },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
         },
       ])
       .toArray();

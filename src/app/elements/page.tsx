@@ -6,6 +6,7 @@ import React, {
   lazy,
   Suspense,
   ComponentType,
+  useCallback,
 } from "react";
 import { motion } from "framer-motion";
 import { LiveProvider, LivePreview, LiveError } from "react-live";
@@ -78,6 +79,9 @@ const ElementsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [activeSection, setActiveSection] = useState<ComponentTag>("all");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const ITEMS_PER_PAGE = 15;
 
   // Calculate component counts for each tag
   const getComponentCounts = () => {
@@ -101,15 +105,13 @@ const ElementsPage = () => {
 
   const componentCounts = getComponentCounts();
 
-  useEffect(() => {
-    fetchComponents();
-  }, []);
-
-  const fetchComponents = async () => {
-    setLoading(true);
-    setError("");
+  const fetchComponents = async (pageNum: number) => {
     try {
-      const response = await axios.get("/api/components/public");
+      setLoading(true);
+      setError("");
+      const response = await axios.get(
+        `/api/components/public?page=${pageNum}&limit=${ITEMS_PER_PAGE}`
+      );
       const data = response.data;
 
       if (Array.isArray(data)) {
@@ -117,7 +119,15 @@ const ElementsPage = () => {
           ...component,
           tag: component.tag || component.metadata?.tag || "all",
         }));
-        setComponents(componentsWithTags);
+
+        if (pageNum === 1) {
+          setComponents(componentsWithTags);
+        } else {
+          setComponents((prev) => [...prev, ...componentsWithTags]);
+        }
+
+        // If we got less than ITEMS_PER_PAGE items, we've reached the end
+        setHasMore(data.length === ITEMS_PER_PAGE);
       } else {
         console.error("Expected array response but got:", data);
         setComponents([]);
@@ -130,6 +140,31 @@ const ElementsPage = () => {
       setLoading(false);
     }
   };
+
+  // Scroll handler
+  const handleScroll = useCallback(() => {
+    if (loading || !hasMore) return;
+
+    const scrollHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.scrollY;
+    const clientHeight = document.documentElement.clientHeight;
+
+    // Load more when user is near the bottom
+    if (scrollTop + clientHeight >= scrollHeight - 100) {
+      setPage((prev) => prev + 1);
+    }
+  }, [loading, hasMore]);
+
+  // Add scroll event listener
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // Fetch components when page changes
+  useEffect(() => {
+    fetchComponents(page);
+  }, [page]);
 
   const handleComponentClick = (componentId: string) => {
     router.push(`/elements/${componentId}`);
@@ -154,40 +189,16 @@ const ElementsPage = () => {
     );
   });
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader />
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-2xl font-bold mb-4 text-red-500">Error</h1>
         <p className="text-gray-600 mb-4">{error}</p>
         <button
-          onClick={fetchComponents}
+          onClick={() => fetchComponents(1)}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
           Try Again
         </button>
-      </div>
-    );
-  }
-
-  if (components.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <h1 className="text-2xl font-bold mb-4">No Components Available</h1>
-        <p className="text-gray-600 mb-4">
-          Start by creating components in the playground
-        </p>
-        <Link
-          href="/dashboard"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-          Login to create components
-        </Link>
       </div>
     );
   }
@@ -225,7 +236,7 @@ const ElementsPage = () => {
       </Sidebar>
 
       <MainContent>
-        <div className="w-full min-h-screen main-content  p-3">
+        <div className="w-full min-h-screen main-content p-3">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredComponents.map((component) => (
               <motion.div
@@ -345,6 +356,13 @@ const ElementsPage = () => {
               </motion.div>
             ))}
           </div>
+
+          {/* Loading indicator */}
+          {loading && (
+            <div className="flex justify-center my-4">
+              <Loader />
+            </div>
+          )}
         </div>
       </MainContent>
     </div>

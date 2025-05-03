@@ -19,9 +19,9 @@ const NavWrapper = () => {
   );
 
   const handleGoogleLogin = () => {
-    const callbackUrl = process.env.NEXTAUTH_URL
-      ? `${process.env.NEXTAUTH_URL}/dashboard`
-      : "";
+    const callbackUrl = process.env.NEXT_PUBLIC_BASE_URL
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`
+      : "/dashboard";
 
     signIn("google", {
       callbackUrl,
@@ -30,9 +30,9 @@ const NavWrapper = () => {
   };
 
   const handleGitHubLogin = () => {
-    const callbackUrl = process.env.NEXTAUTH_URL
-      ? `${process.env.NEXTAUTH_URL}/dashboard`
-      : "";
+    const callbackUrl = process.env.NEXT_PUBLIC_BASE_URL
+      ? `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`
+      : "/dashboard";
 
     signIn("github", {
       callbackUrl,

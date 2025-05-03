@@ -189,8 +189,7 @@ const DashboardPage = () => {
                             : "font-semibold text-white/85"
                         }
                       `}
-                      onClick={() => setHtmlUseTailwind(true)}
-                      disabled={htmlUseTailwind}>
+                      onClick={() => setHtmlUseTailwind((prev) => !prev)}>
                       <SiTailwindcss className="w-5 h-5 text-blue-400" />
                       <span>Tailwind CSS</span>
                     </button>
@@ -245,8 +244,7 @@ const DashboardPage = () => {
                             : "font-semibold text-white/85"
                         }
                       `}
-                      onClick={() => setReactUseTailwind(true)}
-                      disabled={reactUseTailwind}>
+                      onClick={() => setReactUseTailwind((prev) => !prev)}>
                       <SiTailwindcss className="w-5 h-5 text-blue-400" />
                       <span>Tailwind CSS</span>
                     </button>

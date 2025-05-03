@@ -482,13 +482,6 @@ const ReactPlayground = ({
               }`}>
               CSS
             </button>
-            {!tailwindEnabled && (
-              <button
-                className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400 px-5 py-1 rounded-4xl ml-4"
-                onClick={() => setTailwindEnabled(true)}>
-                <span>Enable Tailwind CSS</span>
-              </button>
-            )}
           </div>
           <div className="flex-1 min-h-0">
             {activeEditor === "jsx" ? (

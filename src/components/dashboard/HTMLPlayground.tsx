@@ -122,13 +122,6 @@ console.log(user);`,
               }`}>
               {language === "ts" ? "TypeScript" : "JavaScript"}
             </button>
-            {!useTailwind && (
-              <button
-                className="capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold text-white/85 border-1 border-amber-400 rounded-4xl ml-4"
-                onClick={() => setIsTagModalOpen(true)}>
-                <span>Tailwind CSS</span>
-              </button>
-            )}
           </div>
           <div className="flex-1 min-h-0">
             {activeEditor === "html" ? (

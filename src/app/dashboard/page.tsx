@@ -139,7 +139,7 @@ const DashboardPage = () => {
         <div className="w-full min-h-screen main-content gap-3">
           {activePage === "playground" ? (
             <>
-              <div className="w-full py-1 px-8 flex flex-row gap-14">
+              <div className="w-full py-1 px-8 flex flex-row gap-16">
                 {/* HTML Section */}
                 <div className="flex flex-col justify-center items-center ml-32">
                   <button

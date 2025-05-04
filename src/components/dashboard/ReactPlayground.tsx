@@ -545,7 +545,7 @@ const ReactPlayground = ({
                   scope={scope}
                   noInline={true}>
                   <LiveError className="text-red-500 mb-4" />
-                  <div className="w-full h-full overflow-auto">
+                  <div className="w-48 h-48 overflow-auto">
                     <div className="w-full h-full">
                       {/* Inject Tailwind CDN if enabled */}
                       {tailwindEnabled && (

@@ -136,7 +136,7 @@ const DashboardPage = () => {
       </Sidebar>
 
       <MainContent>
-        <div className="w-full min-h-screen main-content gap-3">
+        <div className="w-full min-h-screen main-content gap-6">
           {activePage === "playground" ? (
             <>
               <div className="w-full py-1 px-8 flex flex-row gap-16">

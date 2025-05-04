@@ -27,6 +27,7 @@ import { AiFillHome } from "react-icons/ai";
 import Link from "next/link";
 import { FaUser } from "react-icons/fa";
 import Image from "next/image";
+import styled from "styled-components";
 
 interface Component {
   _id: string;
@@ -252,7 +253,7 @@ const ElementsPage = () => {
                     </span>
                   </div>
 
-                  <div className="relative h-48 bg-gray-50 rounded-lg overflow-hidden">
+                  <div className="relative w-48 h-48 bg-gray-50 rounded-lg overflow-hidden">
                     {component.type === "html" ? (
                       <iframe
                         title={`${component.name} preview`}
@@ -292,7 +293,7 @@ const ElementsPage = () => {
                     ) : (
                       <Suspense
                         fallback={
-                          <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-full h-full">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                           </div>
                         }>
@@ -330,6 +331,7 @@ const ElementsPage = () => {
                                 React,
                                 useState: React.useState,
                                 useEffect: React.useEffect,
+                                styled,
                               }}
                               noInline={true}>
                               <div className="w-full h-full flex items-center justify-center p-4">

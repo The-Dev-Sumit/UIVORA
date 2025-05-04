@@ -226,6 +226,13 @@ const MyComponents = () => {
   };
 
   const DynamicPreview = ({ code }: { code: string }) => {
+    if (typeof window === "undefined") {
+      return (
+        <div className="text-gray-500 p-4">
+          Preview only works on client side.
+        </div>
+      );
+    }
     const [Component, setComponent] = useState<React.ComponentType | null>(
       null
     );

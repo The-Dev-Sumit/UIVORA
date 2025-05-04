@@ -350,6 +350,13 @@ const defaultCSS = `/* Custom CSS ko yahan likho */
 }`;
 
 const DynamicPreview = ({ code }: { code: string }) => {
+  if (typeof window === "undefined") {
+    return (
+      <div className="text-gray-500 p-4">
+        Preview only works on client side.
+      </div>
+    );
+  }
   const [Component, setComponent] = useState<React.ComponentType | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -360,7 +367,7 @@ const DynamicPreview = ({ code }: { code: string }) => {
         const blob = new Blob(
           [
             `
-          import React from 'react';
+          import React, {useState, useEffect, useRef} from 'react';
           import { motion } from 'framer-motion';
           import gsap from 'gsap';
           import styled from 'styled-components';

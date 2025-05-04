@@ -405,14 +405,23 @@ const ReactPlayground = ({
       document.head.appendChild(styleTag);
     }
 
-    styleTag.textContent = initialUseTailwind ? "" : code.css;
+    // If Tailwind is enabled, inject Tailwind CDN
+    if (tailwindEnabled) {
+      const tailwindScript = document.createElement("script");
+      tailwindScript.src =
+        "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4";
+      document.head.appendChild(tailwindScript);
+    }
+
+    // Always inject custom CSS if it exists
+    styleTag.textContent = code.css;
 
     return () => {
       if (styleTag && document.head.contains(styleTag)) {
         document.head.removeChild(styleTag);
       }
     };
-  }, [code.css, initialUseTailwind]);
+  }, [code.css, tailwindEnabled]);
 
   const scope = {
     motion,

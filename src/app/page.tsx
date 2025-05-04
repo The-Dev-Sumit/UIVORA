@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import { FiGithub } from "react-icons/fi";
+import { RxDiscordLogo } from "react-icons/rx";
 
 export const metadata: Metadata = {
   title: "Uivora",
@@ -49,6 +50,13 @@ export default function Home() {
         <ElementComponent />
       </div>
       <div className="flex gap-4">
+        <Link href="https://discord.gg/2Prgnwdh" target="_blank">
+          <button
+            title="Discord Server"
+            className="text-white/50 text-2xl py-2 cursor-pointer">
+            <RxDiscordLogo />
+          </button>
+        </Link>
         <Link href="/elements">
           <button className="capitalize italic flex items-center gap-2 font-semibold border-1 tracking-wide active:scale-95 border-amber-200 hover:border-indigo-400 cursor-pointer px-2 py-1 rounded-md">
             <span className="text-[1.3rem] text-white">elements</span>

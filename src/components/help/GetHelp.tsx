@@ -81,7 +81,8 @@ const ContactContent: React.FC = () => (
     <div className="bg-gray-700/50 p-4 rounded-lg">
       <h3 className="text-lg font-semibold mb-2">GitHub Contributions</h3>
       <p className="text-gray-300">
-        Found a bug? Report it on my GitHub repository or you can contribute to the project:
+        Found a bug? Report it on my GitHub repository or you can contribute to
+        the project:
         <a
           href="https://github.com/The-Dev-Sumit"
           target="_blank"
@@ -95,7 +96,57 @@ const ContactContent: React.FC = () => (
   </div>
 );
 
+const HowToUseContent: React.FC = () => (
+  <div className="space-y-4">
+    <div className="bg-gray-700/50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold mb-2">
+        How to use UIVora Playground
+      </h3>
+      <ol className="list-decimal ml-6 text-gray-300 space-y-2">
+        <li>
+          <b>HTML/CSS/JS Playground:</b> Write your HTML, CSS, and JavaScript
+          code in the respective tabs. Click Preview to see the output
+          instantly.
+        </li>
+        <li>
+          <b>React Playground:</b> Always create a function component named{" "}
+          <code>App</code> and export it as default. <br />
+          <span className="block mt-2">Example:</span>
+          <pre className="bg-gray-900 rounded p-2 text-sm mt-1">
+            {`const App = () => {
+  return <button>Hello</button>;
+};
+
+export default App;`}
+          </pre>
+          <span className="block mt-2">Or with state:</span>
+          <pre className="bg-gray-900 rounded p-2 text-sm mt-1">
+            {`const App = () => {
+  const [count, setCount] = React.useState(0);
+  return <button onClick={() => setCount(count + 1)}>{count}</button>;
+};
+
+export default App;`}
+          </pre>
+        </li>
+        <li>
+          <b>No need to write import statements!</b> <br />
+          <span className="block">
+            You do NOT need to import React, useState, motion, gsap, or
+            styled-components. These are already available for you.
+          </span>
+        </li>
+        <li>
+          <b>Save &amp; Share:</b> You can save your components and share them
+          with others from the dashboard.
+        </li>
+      </ol>
+    </div>
+  </div>
+);
+
 const TabContent: React.FC<TabContentProps> = ({ activeTab }) => {
+  if (activeTab === "howto") return <HowToUseContent />;
   if (activeTab === "faq") return <FAQContent />;
   if (activeTab === "contact") return <ContactContent />;
   return null;
@@ -104,7 +155,9 @@ const TabContent: React.FC<TabContentProps> = ({ activeTab }) => {
 const GetHelp: React.FC = () => {
   const { status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"faq" | "contact">("faq");
+  const [activeTab, setActiveTab] = useState<"faq" | "contact" | "howto">(
+    "faq"
+  );
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -124,6 +177,15 @@ const GetHelp: React.FC = () => {
         <div className="space-y-6 text-white">
           {/* Tabs */}
           <div className="flex gap-4 border-b border-gray-700">
+            <button
+              onClick={() => setActiveTab("howto")}
+              className={`px-4 py-2 cursor-pointer ${
+                activeTab === "howto"
+                  ? "border-b-2 border-blue-500 text-blue-400"
+                  : "text-gray-400"
+              }`}>
+              How to Use
+            </button>
             <button
               onClick={() => setActiveTab("faq")}
               className={`px-4 py-2 cursor-pointer ${

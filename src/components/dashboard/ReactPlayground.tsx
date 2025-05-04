@@ -349,67 +349,10 @@ const defaultCSS = `/* Custom CSS ko yahan likho */
   transform: translateY(-2px);
 }`;
 
-const DynamicPreview = ({ code }: { code: string }) => {
-  if (typeof window === "undefined") {
-    return (
-      <div className="text-gray-500 p-4">
-        Preview only works on client side.
-      </div>
-    );
-  }
-  const [Component, setComponent] = useState<React.ComponentType | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadComponent = async () => {
-      try {
-        // Create a blob URL for the component code
-        const blob = new Blob(
-          [
-            `
-          import React, {useState, useEffect, useRef} from 'react';
-          import { motion } from 'framer-motion';
-          import gsap from 'gsap';
-          import styled from 'styled-components';
-          
-          ${code}
-          
-          export default App;
-        `,
-          ],
-          { type: "text/javascript" }
-        );
-
-        const url = URL.createObjectURL(blob);
-
-        // Dynamically import the component
-        const module = await import(/* @vite-ignore */ url);
-        setComponent(() => module.default);
-        setError(null);
-
-        // Cleanup
-        URL.revokeObjectURL(url);
-      } catch (err) {
-        console.error("Error loading component:", err);
-        setError(
-          err instanceof Error ? err.message : "Failed to load component"
-        );
-      }
-    };
-
-    loadComponent();
-  }, [code]);
-
-  if (error) {
-    return <div className="text-red-500 p-4">{error}</div>;
-  }
-
-  if (!Component) {
-    return <div className="text-gray-500 p-4">Loading component...</div>;
-  }
-
-  return <Component />;
-};
+const DynamicPreview = dynamic(
+  () => import("@/components/common/DynamicPreview"),
+  { ssr: false }
+);
 
 const ReactPlayground = ({
   isTypeScript = false,

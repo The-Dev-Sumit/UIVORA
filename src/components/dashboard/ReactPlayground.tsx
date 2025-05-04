@@ -544,9 +544,9 @@ const ReactPlayground = ({
                   code={`
                     ${
                       code.css
-                        ? "const style = document.createElement('style');\nstyle.textContent = '" +
-                          code.css +
-                          "';\ndocument.head.appendChild(style);"
+                        ? "const style = document.createElement('style');\nstyle.textContent = " +
+                          JSON.stringify(code.css) +
+                          ";\ndocument.head.appendChild(style);"
                         : ""
                     }
                     ${

@@ -535,7 +535,7 @@ const ReactPlayground = ({
                 Save
               </button>
             </div>
-            <div className="flex-1 bg-gray-100 flex flex-col">
+            <div className="h-[34rem] w-[34rem] bg-gray-100 ">
               <div
                 ref={previewRef}
                 className="flex-1 bg-white rounded-lg shadow-lg ">
@@ -545,17 +545,15 @@ const ReactPlayground = ({
                   scope={scope}
                   noInline={true}>
                   <LiveError className="text-red-500 mb-4" />
-                  <div className="w-48 h-48 overflow-auto">
-                    <div className="w-full h-full">
-                      {/* Inject Tailwind CDN if enabled */}
-                      {tailwindEnabled && (
-                        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                      )}
-                      {/* Always inject CSS */}
-                      <style>{`html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; box-sizing: border-box; }`}</style>
-                      <style>{code.css}</style>
-                      <LivePreview />
-                    </div>
+                  <div className="w-full h-full overflow-auto">
+                    {/* Inject Tailwind CDN if enabled */}
+                    {tailwindEnabled && (
+                      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                    )}
+                    {/* Always inject CSS */}
+                    <style>{`html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; box-sizing: border-box; }`}</style>
+                    <style>{code.css}</style>
+                    <LivePreview />
                   </div>
                 </LiveProvider>
               </div>

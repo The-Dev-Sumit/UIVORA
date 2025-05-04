@@ -13,6 +13,7 @@ import TagSelectionModal, { ComponentTag } from "../TagSelectionModal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
+import dynamic from "next/dynamic";
 
 type CodeState = {
   jsx: string;
@@ -80,7 +81,7 @@ const App = () => {
   );
 };
 
-render(<App />);
+export default App;
 `;
 
 const defaultJSXWithTailwind = `
@@ -138,7 +139,7 @@ const App = () => {
   );
 };
 
-render(<App />);
+export default App;
 `;
 
 const defaultTSXWithCSS = `
@@ -210,7 +211,7 @@ const App: React.FC = () => {
   );
 };
 
-render(<App />);
+export default App;
 `;
 
 const defaultTSXWithTailwind = `
@@ -245,7 +246,7 @@ const App: React.FC = () => {
   }, [count]);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8  bg-gray-50 rounded-lg shadow-md">
+    <div className="flex flex-col items-center gap-6 p-8 bg-gray-50 rounded-lg shadow-md">
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -282,7 +283,7 @@ const App: React.FC = () => {
   );
 };
 
-render(<App />);
+export default App;
 `;
 
 const defaultCSS = `/* Custom CSS ko yahan likho */
@@ -347,6 +348,61 @@ const defaultCSS = `/* Custom CSS ko yahan likho */
   background-color: #e53e3e;
   transform: translateY(-2px);
 }`;
+
+const DynamicPreview = ({ code }: { code: string }) => {
+  const [Component, setComponent] = useState<React.ComponentType | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadComponent = async () => {
+      try {
+        // Create a blob URL for the component code
+        const blob = new Blob(
+          [
+            `
+          import React from 'react';
+          import { motion } from 'framer-motion';
+          import gsap from 'gsap';
+          import styled from 'styled-components';
+          
+          ${code}
+          
+          export default App;
+        `,
+          ],
+          { type: "text/javascript" }
+        );
+
+        const url = URL.createObjectURL(blob);
+
+        // Dynamically import the component
+        const module = await import(/* @vite-ignore */ url);
+        setComponent(() => module.default);
+        setError(null);
+
+        // Cleanup
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("Error loading component:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load component"
+        );
+      }
+    };
+
+    loadComponent();
+  }, [code]);
+
+  if (error) {
+    return <div className="text-red-500 p-4">{error}</div>;
+  }
+
+  if (!Component) {
+    return <div className="text-gray-500 p-4">Loading component...</div>;
+  }
+
+  return <Component />;
+};
 
 const ReactPlayground = ({
   isTypeScript = false,
@@ -487,6 +543,7 @@ const ReactPlayground = ({
             {activeEditor === "jsx" ? (
               <Editor
                 height="100%"
+                width="100%"
                 defaultLanguage={isTypeScript ? "typescript" : "javascript"}
                 value={code.jsx}
                 onChange={(value) => handleCodeChange(value, "jsx")}
@@ -501,6 +558,7 @@ const ReactPlayground = ({
             ) : (
               <Editor
                 height="100%"
+                width="100%"
                 defaultLanguage="css"
                 path="style.css"
                 value={code.css}
@@ -539,24 +597,17 @@ const ReactPlayground = ({
               <div
                 ref={previewRef}
                 className="flex-1 bg-white rounded-lg shadow-lg ">
-                <LiveProvider
-                  key={code.jsx}
-                  code={code.jsx}
-                  scope={scope}
-                  noInline={true}>
-                  <LiveError className="text-red-500 mb-4" />
-                  <div className="flex justify-center items-center min-h-[calc(100vh-200px)] p-4 overflow-auto">
-                    <div className="max-w-full max-h-full flex flex-col items-center justify-center">
-                      {/* Inject Tailwind CDN if enabled */}
-                      {tailwindEnabled && (
-                        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                      )}
-                      {/* Inject user CSS */}
-                      <style>{code.css}</style>
-                      <LivePreview />
-                    </div>
+                <div className="w-full h-full overflow-auto">
+                  <div className="w-full h-full">
+                    {tailwindEnabled && (
+                      <script
+                        async
+                        src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                    )}
+                    {!tailwindEnabled && code.css && <style>{code.css}</style>}
+                    <DynamicPreview code={code.jsx} />
                   </div>
-                </LiveProvider>
+                </div>
               </div>
             </div>
           </div>

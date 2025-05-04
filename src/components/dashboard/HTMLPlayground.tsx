@@ -196,13 +196,13 @@ console.log(user);`,
                           : ""
                       }
                       <style>
-                        body {
-                          display: flex;
-                          justify-content: center;
-                          align-items: center;
-                          min-height: 100vh;
-                          margin: 0;
-                        }
+                          body {
+                              margin: 0;
+                              padding: 0;
+                              width: 100%;
+                              height: 100%;
+                              box-sizing: border-box;
+                            }
                         ${code.css}
                       </style>
                       ${
@@ -212,9 +212,7 @@ console.log(user);`,
                       }
                     </head>
                     <body>
-                      <div class="content">
                         ${code.html}
-                      </div>
                       <script${
                         language === "ts" ? ' type="text/typescript"' : ""
                       }>

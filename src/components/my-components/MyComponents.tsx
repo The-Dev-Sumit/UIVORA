@@ -17,6 +17,7 @@ import { IoWarning } from "react-icons/io5";
 import CancelButton from "@/components/CancelButton";
 import DeleteButton from "../DeleteButton";
 import styled from "styled-components";
+import dynamic from "next/dynamic";
 
 interface Component {
   _id: string;
@@ -224,6 +225,69 @@ const MyComponents = () => {
     },
   };
 
+  const DynamicPreview = ({ code }: { code: string }) => {
+    const [Component, setComponent] = useState<React.ComponentType | null>(
+      null
+    );
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+      const loadComponent = async () => {
+        try {
+          // Create a blob URL for the component code
+          const blob = new Blob(
+            [
+              `
+            import React from 'react';
+            import { motion } from 'framer-motion';
+            import gsap from 'gsap';
+            import styled from 'styled-components';
+            
+            const App = () => {
+              return (
+                <div style={{ margin: 0, padding: 0 }}>
+                  ${code}
+                </div>
+              );
+            };
+            
+            export default App;
+          `,
+            ],
+            { type: "text/javascript" }
+          );
+
+          const url = URL.createObjectURL(blob);
+
+          // Dynamically import the component
+          const module = await import(/* @vite-ignore */ url);
+          setComponent(() => module.default);
+          setError(null);
+
+          // Cleanup
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error("Error loading component:", err);
+          setError(
+            err instanceof Error ? err.message : "Failed to load component"
+          );
+        }
+      };
+
+      loadComponent();
+    }, [code]);
+
+    if (error) {
+      return <div className="text-red-500 p-4">{error}</div>;
+    }
+
+    if (!Component) {
+      return <div className="text-gray-500 p-4">Loading component...</div>;
+    }
+
+    return <Component />;
+  };
+
   return (
     <div className="w-full min-h-screen py-2">
       <div className="max-w-6xl mx-auto bg-transparent text-white rounded-lg shadow-lg p-4">
@@ -381,14 +445,12 @@ const MyComponents = () => {
                       <html>
                         <head>
                           <style>
-                            html, body {
+                             body {
                               margin: 0;
                               padding: 0;
                               width: 100%;
                               height: 100%;
-                              display: flex;
-                              justify-content: center;
-                              align-items: center;
+                              box-sizing: border-box;
                             }
                             ${editingComponent.code.css || ""}
                           </style>
@@ -409,35 +471,18 @@ const MyComponents = () => {
                     sandbox="allow-scripts"
                   />
                 ) : (
-                  <LiveProvider
-                    code={`function EditComponent() {
-                      ${editingComponent.code.jsx || ""}
-                      }
-                      render(<EditComponent />);
-                      `}
-                    scope={{
-                      ...scope,
-                      motion,
-                      gsap,
-                      React,
-                      useState: React.useState,
-                      useEffect: React.useEffect,
-                    }}
-                    noInline={true}>
-                    <div className="w-full h-full flex items-center justify-center p-4">
-                      {editingComponent.code.useTailwind && (
-                        <script
-                          async
-                          src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                  <div className="w-full h-full overflow-hidden bg-white">
+                    {editingComponent.code.useTailwind && (
+                      <script
+                        async
+                        src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                    )}
+                    {!editingComponent.code.useTailwind &&
+                      editingComponent.code.css && (
+                        <style>{editingComponent.code.css}</style>
                       )}
-                      {!editingComponent.code.useTailwind &&
-                        editingComponent.code.css && (
-                          <style>{editingComponent.code.css}</style>
-                        )}
-                      <LivePreview />
-                    </div>
-                    <LiveError className="text-red-500 text-sm absolute bottom-0 left-0 right-0 bg-red-50 p-2" />
-                  </LiveProvider>
+                    <DynamicPreview code={editingComponent.code.jsx || ""} />
+                  </div>
                 )}
               </div>
             </div>
@@ -491,9 +536,7 @@ const MyComponents = () => {
                                 padding: 0;
                                 width: 100%;
                                 height: 100%;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
+                                box-sizing: border-box;
                               }
                               ${component.code.css || ""}
                             </style>
@@ -514,36 +557,17 @@ const MyComponents = () => {
                       sandbox="allow-scripts"
                     />
                   ) : (
-                    <LiveProvider
-                      code={`
-                        function ReadyComponent() {
-                          ${component.code.jsx || ""}
-                        }
-                        render(<ReadyComponent />);
-                      `}
-                      scope={{
-                        ...scope,
-                        motion,
-                        gsap,
-                        React,
-                        useState: React.useState,
-                        useEffect: React.useEffect,
-                        styled,
-                      }}
-                      noInline={true}>
-                      <div className="w-full h-full flex items-center justify-center overflow-hidden bg-white">
-                        {component.code.useTailwind && (
-                          <script
-                            async
-                            src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                        )}
-                        {!component.code.useTailwind && component.code.css && (
-                          <style>{component.code.css}</style>
-                        )}
-                        <LivePreview />
-                      </div>
-                      <LiveError />
-                    </LiveProvider>
+                    <div className="w-full h-full overflow-hidden bg-white">
+                      {component.code.useTailwind && (
+                        <script
+                          async
+                          src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                      )}
+                      {!component.code.useTailwind && component.code.css && (
+                        <style>{component.code.css}</style>
+                      )}
+                      <DynamicPreview code={component.code.jsx || ""} />
+                    </div>
                   )}
                 </div>
               </div>

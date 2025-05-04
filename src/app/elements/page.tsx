@@ -266,9 +266,7 @@ const ElementsPage = () => {
                                   padding: 0;
                                   width: 100%;
                                   height: 100%;
-                                  display: flex;
-                                  justify-content: center;
-                                  align-items: center;
+                                  box-sizing: border-box;
                                 }
                                 ${component.code.css || ""}
                               </style>
@@ -279,9 +277,7 @@ const ElementsPage = () => {
                               }
                             </head>
                             <body>
-                              <div class="content">
                                 ${component.code.html}
-                              </div>
                               ${
                                 component.code.js
                                   ? `<script>${component.code.js}</script>`

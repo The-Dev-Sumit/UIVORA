@@ -382,7 +382,7 @@ const MyComponents = () => {
                       <html>
                         <head>
                           <style>
-                             body {
+                             html, body {
                               margin: 0;
                               padding: 0;
                               width: 100%;
@@ -430,6 +430,7 @@ const MyComponents = () => {
                             async
                             src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                         )}
+                        <style>{`html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; box-sizing: border-box; }`}</style>
                         {editingComponent.code.css && (
                           <style>{editingComponent.code.css}</style>
                         )}
@@ -532,6 +533,7 @@ const MyComponents = () => {
                             async
                             src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                         )}
+                        <style>{`html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; box-sizing: border-box; }`}</style>
                         {component.code.css && (
                           <style>{component.code.css}</style>
                         )}

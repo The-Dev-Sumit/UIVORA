@@ -552,6 +552,7 @@ const ReactPlayground = ({
                         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
                       )}
                       {/* Always inject CSS */}
+                      <style>{`html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; box-sizing: border-box; }`}</style>
                       <style>{code.css}</style>
                       <LivePreview />
                     </div>

@@ -17,6 +17,7 @@ import { IoWarning } from "react-icons/io5";
 import CancelButton from "@/components/CancelButton";
 import DeleteButton from "../DeleteButton";
 import styled from "styled-components";
+import TagSelectionModal, { ComponentTag } from "../TagSelectionModal";
 
 interface Component {
   _id: string;
@@ -29,6 +30,7 @@ interface Component {
     jsx?: string;
     language?: "js" | "ts";
     useTailwind?: boolean;
+    tag?: ComponentTag;
   };
 }
 
@@ -47,6 +49,8 @@ const MyComponents = () => {
   );
   const [isAnimating, setIsAnimating] = useState(false);
   const [activeEditTab, setActiveEditTab] = useState<string>("html");
+  const [isTagModalOpen, setIsTagModalOpen] = useState(false);
+  const [selectedTag, setSelectedTag] = useState<ComponentTag | null>(null);
 
   const handleAnimationEnd = (isAnimating: boolean) => {
     setIsAnimating(isAnimating);
@@ -106,6 +110,7 @@ const MyComponents = () => {
 
   const handleEdit = (component: Component) => {
     setEditingComponent(component);
+    setSelectedTag(component.code.tag || null);
   };
 
   const handleDelete = async (componentId: string) => {
@@ -131,17 +136,16 @@ const MyComponents = () => {
     }
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = async (tagFromModal?: ComponentTag) => {
     if (!editingComponent) return;
-
+    const tagToSave = tagFromModal || selectedTag;
     try {
       const response = await axios.put(
         `/api/user/components?id=${editingComponent._id}`,
         {
-          code: editingComponent.code,
+          code: { ...editingComponent.code, tag: tagToSave },
         }
       );
-
       if (response.data.success) {
         toast.success("Component updated successfully");
         setEditingComponent(null);
@@ -236,10 +240,7 @@ const MyComponents = () => {
               </h2>
               <div className="flex gap-2">
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSaveEdit();
-                  }}
+                  onClick={() => setIsTagModalOpen(true)}
                   className="px-4 py-2 cursor-pointer z-30 text-white rounded-lg hover:bg-green-600">
                   Save
                 </button>
@@ -267,7 +268,7 @@ const MyComponents = () => {
                         onClick={() => setActiveEditTab("html")}>
                         HTML
                       </button>
-                      {!editingComponent.code.useTailwind && (
+                      {editingComponent.code.css && (
                         <button
                           className={`px-3 py-1 rounded-md ${
                             activeEditTab === "css"
@@ -301,7 +302,7 @@ const MyComponents = () => {
                         onClick={() => setActiveEditTab("jsx")}>
                         JSX
                       </button>
-                      {!editingComponent.code.useTailwind && (
+                      {editingComponent.code.css && (
                         <button
                           className={`px-3 py-1 rounded-md ${
                             activeEditTab === "css"
@@ -571,6 +572,15 @@ const MyComponents = () => {
           </div>
         </div>
       </Modal>
+      <TagSelectionModal
+        isOpen={isTagModalOpen}
+        onClose={() => setIsTagModalOpen(false)}
+        onSelectTag={(tag) => {
+          setSelectedTag(tag);
+          setIsTagModalOpen(false);
+          handleSaveEdit(tag);
+        }}
+      />
     </div>
   );
 };

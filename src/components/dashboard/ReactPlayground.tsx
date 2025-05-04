@@ -540,22 +540,30 @@ const ReactPlayground = ({
                 ref={previewRef}
                 className="flex-1 bg-white rounded-lg shadow-lg ">
                 <LiveProvider
-                  key={code.jsx}
-                  code={code.jsx}
+                  key={code.jsx + tailwindEnabled + code.css}
+                  code={`
+                    ${
+                      code.css
+                        ? "const style = document.createElement('style');\nstyle.textContent = '" +
+                          code.css +
+                          "';\ndocument.head.appendChild(style);"
+                        : ""
+                    }
+                    ${
+                      tailwindEnabled
+                        ? "const tailwindScript = document.createElement('script');\ntailwindScript.src = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';\ndocument.head.appendChild(tailwindScript);"
+                        : ""
+                    }
+                    const style2 = document.createElement('style');
+                    style2.textContent = 'html, body, #root, #root > div, #root > div > div { width: 100% !important; height: 100% !important; min-height: 100% !important; margin: 0; padding: 0; box-sizing: border-box; }';
+                    document.head.appendChild(style2);
+                    ${code.jsx}
+                    `}
                   scope={scope}
                   noInline={true}>
                   <LiveError className="text-red-500 mb-4" />
-                  <div className="w-full h-full overflow-auto">
-                    <div className="w-full h-full">
-                      {/* Inject Tailwind CDN if enabled */}
-                      {tailwindEnabled && (
-                        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                      )}
-                      {/* Always inject CSS */}
-                      <style>{`html, body, #root { width: 100%; height: 100%; margin: 0; padding: 0; box-sizing: border-box; }`}</style>
-                      <style>{code.css}</style>
-                      <LivePreview />
-                    </div>
+                  <div className="w-full h-full">
+                    <LivePreview />
                   </div>
                 </LiveProvider>
               </div>

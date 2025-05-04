@@ -103,7 +103,7 @@ const ComponentDetails = () => {
     }
 
     try {
-    await navigator.clipboard.writeText(codeToCopy);
+      await navigator.clipboard.writeText(codeToCopy);
       setCopyStatus("code copied");
       setTimeout(() => setCopyStatus(""), 2000);
     } catch (error) {
@@ -202,23 +202,22 @@ const ComponentDetails = () => {
             TSX
           </button>
         );
-    } else {
-      tabs.push(
-        <button
-          key="jsx"
+      } else {
+        tabs.push(
+          <button
+            key="jsx"
             onClick={() => setActiveTab("jsx")}
-          className={`px-4 py-2 rounded-lg cursor-pointer ${
+            className={`px-4 py-2 rounded-lg cursor-pointer ${
               activeTab === "jsx"
-              ? "bg-gray-900 text-white"
-              : "bg-gray-700 text-gray-200"
-          }`}>
+                ? "bg-gray-900 text-white"
+                : "bg-gray-700 text-gray-200"
+            }`}>
             JSX
-        </button>
-      );
+          </button>
+        );
       }
-
-      // Show CSS/Tailwind tab for React components
-      if (component.code.css || component.metadata?.useTailwind) {
+      // Always show CSS tab if code.css exists
+      if (component.code.css) {
         tabs.push(
           <button
             key="css"
@@ -228,7 +227,7 @@ const ComponentDetails = () => {
                 ? "bg-gray-900 text-white"
                 : "bg-gray-700 text-gray-200"
             }`}>
-            {component.metadata?.useTailwind ? "Tailwind CSS" : "CSS"}
+            CSS
           </button>
         );
       }
@@ -237,13 +236,7 @@ const ComponentDetails = () => {
     return tabs;
   };
 
-  const scope = {
-    motion,
-    gsap,
-    useState: React.useState,
-    useEffect: React.useEffect,
-    useRef: React.useRef,
-  };
+
 
   return (
     <div className="min-h-screen bg-gray-900 p-6">
@@ -339,7 +332,7 @@ const ComponentDetails = () => {
                         : component.code.js
                       : activeTab === "css"
                       ? component.code.css
-                      : component.metadata?.language === "ts"
+                      : activeTab === "tsx"
                       ? component.code.tsx
                       : component.code.jsx}
                   </code>

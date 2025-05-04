@@ -423,7 +423,7 @@ const MyComponents = () => {
                     }}
                     noInline={true}>
                     <LiveError className="text-red-500 mb-4" />
-                    <div className="h-[34rem] w-[34rem] bg-white overflow-auto">
+                    <div className="w-full h-full overflow-auto">
                       <div className="w-full h-full">
                         {editingComponent.code.useTailwind && (
                           <script
@@ -476,7 +476,7 @@ const MyComponents = () => {
                     </button>
                   </div>
                 </div>
-                <div className="h-[34rem] w-[34rem] bg-white overflow-auto">
+                <div className="bg-white p-4 h-64 overflow-auto">
                   {component.type === "html" ? (
                     <iframe
                       className="w-full h-full"
@@ -527,7 +527,7 @@ const MyComponents = () => {
                         styled,
                       }}
                       noInline={true}>
-                      <div className="h-[34rem] w-[34rem] bg-white overflow-auto">
+                      <div className="w-full h-full overflow-hidden bg-white">
                         {component.code.useTailwind && (
                           <script
                             async

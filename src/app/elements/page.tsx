@@ -253,7 +253,7 @@ const ElementsPage = () => {
                     </span>
                   </div>
 
-                  <div className="relative h-[34rem] w-[34rem] bg-gray-50 rounded-lg overflow-hidden">
+                  <div className="relative h-48 bg-gray-50 rounded-lg overflow-hidden">
                     {component.type === "html" ? (
                       <iframe
                         title={`${component.name} preview`}

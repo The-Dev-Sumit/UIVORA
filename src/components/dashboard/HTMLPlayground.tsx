@@ -212,7 +212,7 @@ console.log(user);`,
                       }
                     </head>
                     <body>
-                        ${code.html}
+                      ${code.html}
                       <script${
                         language === "ts" ? ' type="text/typescript"' : ""
                       }>

@@ -5,6 +5,7 @@ import { FaQuestionCircle } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { FaDiscord } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
+import { FaBook } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -96,66 +97,89 @@ const ContactContent: React.FC = () => (
   </div>
 );
 
-const HowToUseContent: React.FC = () => (
+const UserGuideContent: React.FC = () => (
   <div className="space-y-4">
     <div className="bg-gray-700/50 p-4 rounded-lg">
-      <h3 className="text-lg font-semibold mb-2">
-        How to use UIVora Playground
-      </h3>
-      <ol className="list-decimal ml-6 text-gray-300 space-y-2">
+      <h3 className="text-lg font-semibold mb-2">Creating Components</h3>
+      <p className="text-gray-300">You can create two types of components:</p>
+      <ul className="list-disc pl-6 mt-2 text-gray-300">
         <li>
-          <b>HTML/CSS/JS Playground:</b> Write your HTML, CSS, and JavaScript
-          code in the respective tabs. Click Preview to see the output
-          instantly.
+          <span className="text-amber-300">HTML Components:</span> Using HTML,
+          CSS, Tailwind css and JavaScript/TypeScript
         </li>
         <li>
-          <b>React Playground:</b> Always create a function component named{" "}
-          <code>App</code> and export it as default. <br />
-          <span className="block mt-2">Example:</span>
-          <pre className="bg-gray-900 rounded p-2 text-sm mt-1">
-            {`const App = () => {
-  return <button>Hello</button>;
-};
+          <span className="text-amber-300">React Components:</span> Using React
+          with JSX/TSX and Tailwind css
+        </li>
+      </ul>
+    </div>
 
-export default App;`}
-          </pre>
-          <span className="block mt-2">Or with state:</span>
-          <pre className="bg-gray-900 rounded p-2 text-sm mt-1">
-            {`const App = () => {
-  const [count, setCount] = React.useState(0);
-  return <button onClick={() => setCount(count + 1)}>{count}</button>;
-};
+    <div className="bg-gray-700/50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold mb-2">Styling Options</h3>
+      <p className="text-gray-300">You have multiple styling options:</p>
+      <ul className="list-disc pl-6 mt-2 text-gray-300">
+        <li>
+          <span className="text-amber-300">Regular CSS:</span> Write traditional
+          CSS in the CSS editor
+        </li>
+        <li>
+          <span className="text-amber-300">Tailwind CSS:</span> Use Tailwind
+          utility classes in your HTML/JSX
+        </li>
+        <li>
+          <span className="text-amber-300">Both Together:</span> You can use
+          both CSS and Tailwind in the same component
+        </li>
+      </ul>
+      <p className="mt-2 text-sm text-gray-400">
+        Note: The preview area is full-width and full-height, giving you
+        complete control over layout.
+      </p>
+    </div>
 
-export default App;`}
-          </pre>
-        </li>
-        <li>
-          <b>No need to write import statements!</b> <br />
-          <span className="block">
-            You do NOT need to import React, useState, motion, gsap, or
-            styled-components. These are already available for you.
-          </span>
-        </li>
-        <li>
-          <b>Save &amp; Share:</b> You can save your components and share them
-          with others from the dashboard.
-        </li>
-      </ol>
+    <div className="bg-gray-700/50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold mb-2">Editor Features</h3>
+      <ul className="list-disc pl-6 text-gray-300">
+        <li>Split-screen view with live preview</li>
+        <li>Syntax highlighting for all languages</li>
+        <li>Real-time preview updates</li>
+        <li>Switch between different code files (HTML/CSS/JS or JSX/CSS)</li>
+      </ul>
+    </div>
+
+    <div className="bg-gray-700/50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold mb-2">Saving and Managing</h3>
+      <ul className="list-disc pl-6 text-gray-300">
+        <li>Click "Save" to store your component</li>
+        <li>Add tags to organize your components</li>
+        <li>View all components in your dashboard's MyComponents</li>
+        <li>Edit or delete components anytime</li>
+      </ul>
+    </div>
+
+    <div className="bg-gray-700/50 p-4 rounded-lg">
+      <h3 className="text-lg font-semibold mb-2">Best Practices</h3>
+      <ul className="list-disc pl-6 text-gray-300">
+        <li>Use live preview to see changes instantly</li>
+        <li>Test at different screen sizes</li>
+        <li>Use meaningful names and tags</li>
+        <li>Combine CSS and Tailwind for maximum flexibility</li>
+      </ul>
     </div>
   </div>
 );
 
 const TabContent: React.FC<TabContentProps> = ({ activeTab }) => {
-  if (activeTab === "howto") return <HowToUseContent />;
   if (activeTab === "faq") return <FAQContent />;
   if (activeTab === "contact") return <ContactContent />;
+  if (activeTab === "guide") return <UserGuideContent />;
   return null;
 };
 
 const GetHelp: React.FC = () => {
   const { status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"faq" | "contact" | "howto">(
+  const [activeTab, setActiveTab] = useState<"faq" | "contact" | "guide">(
     "faq"
   );
 
@@ -178,20 +202,21 @@ const GetHelp: React.FC = () => {
           {/* Tabs */}
           <div className="flex gap-4 border-b border-gray-700">
             <button
-              onClick={() => setActiveTab("howto")}
+              onClick={() => setActiveTab("guide")}
               className={`px-4 py-2 cursor-pointer ${
-                activeTab === "howto"
-                  ? "border-b-2 border-blue-500 text-blue-400"
-                  : "text-gray-400"
+                activeTab === "guide"
+                  ? "border-b-2 border-gray-900 text-blue-300"
+                  : "text-gray-300"
               }`}>
-              How to Use
+              <FaBook className="inline mr-2" />
+              User Guide
             </button>
             <button
               onClick={() => setActiveTab("faq")}
               className={`px-4 py-2 cursor-pointer ${
                 activeTab === "faq"
-                  ? "border-b-2 border-blue-500 text-blue-400"
-                  : "text-gray-400"
+                  ? "border-b-2 border-gray-900 text-blue-300"
+                  : "text-gray-300"
               }`}>
               <FaQuestionCircle className="inline mr-2" />
               FAQ
@@ -200,8 +225,8 @@ const GetHelp: React.FC = () => {
               onClick={() => setActiveTab("contact")}
               className={`px-4 py-2 cursor-pointer ${
                 activeTab === "contact"
-                  ? "border-b-2 border-blue-500 text-blue-400"
-                  : "text-gray-400"
+                  ? "border-b-2 border-gray-900 text-blue-300"
+                  : "text-gray-300"
               }`}>
               <MdEmail className="inline mr-2" />
               Contact Us

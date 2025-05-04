@@ -17,7 +17,6 @@ import { IoWarning } from "react-icons/io5";
 import CancelButton from "@/components/CancelButton";
 import DeleteButton from "../DeleteButton";
 import styled from "styled-components";
-import dynamic from "next/dynamic";
 
 interface Component {
   _id: string;
@@ -203,6 +202,7 @@ const MyComponents = () => {
     useState: React.useState,
     useEffect: React.useEffect,
     useRef: React.useRef,
+    styled,
   };
 
   const customModalStyles = {
@@ -223,76 +223,6 @@ const MyComponents = () => {
       backgroundColor: "rgba(0, 0, 0, 0.75)",
       zIndex: 1000,
     },
-  };
-
-  const DynamicPreview = ({ code }: { code: string }) => {
-    if (typeof window === "undefined") {
-      return (
-        <div className="text-gray-500 p-4">
-          Preview only works on client side.
-        </div>
-      );
-    }
-    const [Component, setComponent] = useState<React.ComponentType | null>(
-      null
-    );
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-      const loadComponent = async () => {
-        try {
-          // Create a blob URL for the component code
-          const blob = new Blob(
-            [
-              `
-            import React from 'react';
-            import { motion } from 'framer-motion';
-            import gsap from 'gsap';
-            import styled from 'styled-components';
-            
-            const App = () => {
-              return (
-                <div style={{ margin: 0, padding: 0 }}>
-                  ${code}
-                </div>
-              );
-            };
-            
-            export default App;
-          `,
-            ],
-            { type: "text/javascript" }
-          );
-
-          const url = URL.createObjectURL(blob);
-
-          // Dynamically import the component
-          const module = await import(/* @vite-ignore */ url);
-          setComponent(() => module.default);
-          setError(null);
-
-          // Cleanup
-          URL.revokeObjectURL(url);
-        } catch (err) {
-          console.error("Error loading component:", err);
-          setError(
-            err instanceof Error ? err.message : "Failed to load component"
-          );
-        }
-      };
-
-      loadComponent();
-    }, [code]);
-
-    if (error) {
-      return <div className="text-red-500 p-4">{error}</div>;
-    }
-
-    if (!Component) {
-      return <div className="text-gray-500 p-4">Loading component...</div>;
-    }
-
-    return <Component />;
   };
 
   return (
@@ -468,9 +398,7 @@ const MyComponents = () => {
                           }
                         </head>
                         <body>
-                          <div class="content">
                             ${editingComponent.code.html || ""}
-                          </div>
                           <script>${editingComponent.code.js || ""}</script>
                         </body>
                       </html>
@@ -478,18 +406,37 @@ const MyComponents = () => {
                     sandbox="allow-scripts"
                   />
                 ) : (
-                  <div className="w-full h-full overflow-hidden bg-white">
-                    {editingComponent.code.useTailwind && (
-                      <script
-                        async
-                        src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                    )}
-                    {!editingComponent.code.useTailwind &&
-                      editingComponent.code.css && (
-                        <style>{editingComponent.code.css}</style>
-                      )}
-                    <DynamicPreview code={editingComponent.code.jsx || ""} />
-                  </div>
+                  <LiveProvider
+                    code={`function EditComponent() {
+                      ${editingComponent.code.jsx || ""}
+                    }
+                    render(<EditComponent />);
+                    `}
+                    scope={{
+                      ...scope,
+                      motion,
+                      gsap,
+                      React,
+                      useState: React.useState,
+                      useEffect: React.useEffect,
+                      styled,
+                    }}
+                    noInline={true}>
+                    <LiveError className="text-red-500 mb-4" />
+                    <div className="w-full h-full overflow-auto">
+                      <div className="w-full h-full">
+                        {editingComponent.code.useTailwind && (
+                          <script
+                            async
+                            src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                        )}
+                        {editingComponent.code.css && (
+                          <style>{editingComponent.code.css}</style>
+                        )}
+                        <LivePreview />
+                      </div>
+                    </div>
+                  </LiveProvider>
                 )}
               </div>
             </div>
@@ -554,9 +501,7 @@ const MyComponents = () => {
                             }
                           </head>
                           <body>
-                            <div class="content">
                               ${component.code.html || ""}
-                            </div>
                             <script>${component.code.js || ""}</script>
                           </body>
                         </html>
@@ -564,17 +509,36 @@ const MyComponents = () => {
                       sandbox="allow-scripts"
                     />
                   ) : (
-                    <div className="w-full h-full overflow-hidden bg-white">
-                      {component.code.useTailwind && (
-                        <script
-                          async
-                          src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                      )}
-                      {!component.code.useTailwind && component.code.css && (
-                        <style>{component.code.css}</style>
-                      )}
-                      <DynamicPreview code={component.code.jsx || ""} />
-                    </div>
+                    <LiveProvider
+                      code={`
+                        function ReadyComponent() {
+                          ${component.code.jsx || ""}
+                        }
+                        render(<ReadyComponent />);
+                      `}
+                      scope={{
+                        ...scope,
+                        motion,
+                        gsap,
+                        React,
+                        useState: React.useState,
+                        useEffect: React.useEffect,
+                        styled,
+                      }}
+                      noInline={true}>
+                      <div className="w-full h-full overflow-hidden bg-white">
+                        {component.code.useTailwind && (
+                          <script
+                            async
+                            src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                        )}
+                        {component.code.css && (
+                          <style>{component.code.css}</style>
+                        )}
+                        <LivePreview />
+                      </div>
+                      <LiveError />
+                    </LiveProvider>
                   )}
                 </div>
               </div>

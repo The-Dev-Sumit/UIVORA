@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FaCopy } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
 
 interface SafeCopyProps {
   component: {
@@ -16,7 +15,6 @@ interface SafeCopyProps {
       js?: string;
       jsx?: string;
       tsx?: string;
-      useTailwind?: boolean;
     };
   };
 }
@@ -47,96 +45,12 @@ const SafeCopy = ({ component }: SafeCopyProps) => {
       case "js":
         return component.code.js || "";
       case "jsx":
-        return `import React from 'react';
-import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import styled from 'styled-components';
-
-${component.code.jsx || ""}
-
-export default App;`;
+        return component.code.jsx || "";
       case "tsx":
-        return `import React from 'react';
-import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import styled from 'styled-components';
-
-${component.code.tsx || component.code.jsx || ""}
-
-export default App;`;
+        return component.code.tsx || component.code.jsx || ""; // fallback to jsx if tsx not available
       default:
         return "";
     }
-  };
-
-  const DynamicPreview = ({ code }: { code: string }) => {
-    if (typeof window === "undefined") {
-      return (
-        <div className="text-gray-500 p-4">
-          Preview only works on client side.
-        </div>
-      );
-    }
-    const [Component, setComponent] = useState<React.ComponentType | null>(
-      null
-    );
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-      const loadComponent = async () => {
-        try {
-          // Create a blob URL for the component code
-          const blob = new Blob(
-            [
-              `
-            import React from 'react';
-            import { motion } from 'framer-motion';
-            import gsap from 'gsap';
-            import styled from 'styled-components';
-            
-            const App = () => {
-              return (
-                <div style={{ margin: 0, padding: 0 }}>
-                  ${code}
-                </div>
-              );
-            };
-            
-            export default App;
-          `,
-            ],
-            { type: "text/javascript" }
-          );
-
-          const url = URL.createObjectURL(blob);
-
-          // Dynamically import the component
-          const module = await import(/* @vite-ignore */ url);
-          setComponent(() => module.default);
-          setError(null);
-
-          // Cleanup
-          URL.revokeObjectURL(url);
-        } catch (err) {
-          console.error("Error loading component:", err);
-          setError(
-            err instanceof Error ? err.message : "Failed to load component"
-          );
-        }
-      };
-
-      loadComponent();
-    }, [code]);
-
-    if (error) {
-      return <div className="text-red-500 p-4">{error}</div>;
-    }
-
-    if (!Component) {
-      return <div className="text-gray-500 p-4">Loading component...</div>;
-    }
-
-    return <Component />;
   };
 
   return (
@@ -249,64 +163,9 @@ export default App;`;
               title="Copy code">
               <FaCopy />
               {copyStatus && (
-                <span className="text-sm text-green-600 font-semibold">
-                  {copyStatus}
-                </span>
+                <span className="text-sm text-green-600 font-semibold">{copyStatus}</span>
               )}
             </motion.button>
-          </div>
-
-          <div className="mt-6 border rounded-lg overflow-hidden">
-            <div className="bg-gray-800 text-white px-4 py-2">
-              <h2 className="text-lg font-semibold">Preview</h2>
-            </div>
-            <div className="h-96">
-              {component.type === "html" ? (
-                <iframe
-                  className="w-full h-full"
-                  title={`${component.name} preview`}
-                  srcDoc={`
-                    <!DOCTYPE html>
-                    <html>
-                      <head>
-                        <style>
-                          body {
-                            margin: 0;
-                            padding: 0;
-                            width: 100%;
-                            height: 100%;
-                            box-sizing: border-box;
-                          }
-                          ${component.code.css || ""}
-                        </style>
-                        ${
-                          component.code.useTailwind
-                            ? '<script async src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>'
-                            : ""
-                        }
-                      </head>
-                      <body>
-                        ${component.code.html || ""}
-                        <script>${component.code.js || ""}</script>
-                      </body>
-                    </html>
-                  `}
-                  sandbox="allow-scripts"
-                />
-              ) : (
-                <div className="w-full h-full overflow-hidden bg-white">
-                  {component.code.useTailwind && (
-                    <script
-                      async
-                      src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                  )}
-                  {!component.code.useTailwind && component.code.css && (
-                    <style>{component.code.css}</style>
-                  )}
-                  <DynamicPreview code={component.code.jsx || ""} />
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>

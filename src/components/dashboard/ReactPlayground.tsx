@@ -13,7 +13,6 @@ import TagSelectionModal, { ComponentTag } from "../TagSelectionModal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import styled from "styled-components";
-import dynamic from "next/dynamic";
 
 type CodeState = {
   jsx: string;
@@ -81,7 +80,7 @@ const App = () => {
   );
 };
 
-export default App;
+render(<App />);
 `;
 
 const defaultJSXWithTailwind = `
@@ -139,7 +138,7 @@ const App = () => {
   );
 };
 
-export default App;
+render(<App />);
 `;
 
 const defaultTSXWithCSS = `
@@ -211,7 +210,7 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+render(<App />);
 `;
 
 const defaultTSXWithTailwind = `
@@ -246,7 +245,7 @@ const App: React.FC = () => {
   }, [count]);
 
   return (
-    <div className="flex flex-col items-center gap-6 p-8 bg-gray-50 rounded-lg shadow-md">
+    <div className="flex flex-col items-center gap-6 p-8  bg-gray-50 rounded-lg shadow-md">
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -283,7 +282,7 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+render(<App />);
 `;
 
 const defaultCSS = `/* Custom CSS ko yahan likho */
@@ -348,11 +347,6 @@ const defaultCSS = `/* Custom CSS ko yahan likho */
   background-color: #e53e3e;
   transform: translateY(-2px);
 }`;
-
-const DynamicPreview = dynamic(
-  () => import("@/components/common/DynamicPreview"),
-  { ssr: false }
-);
 
 const ReactPlayground = ({
   isTypeScript = false,
@@ -493,7 +487,6 @@ const ReactPlayground = ({
             {activeEditor === "jsx" ? (
               <Editor
                 height="100%"
-                width="100%"
                 defaultLanguage={isTypeScript ? "typescript" : "javascript"}
                 value={code.jsx}
                 onChange={(value) => handleCodeChange(value, "jsx")}
@@ -508,7 +501,6 @@ const ReactPlayground = ({
             ) : (
               <Editor
                 height="100%"
-                width="100%"
                 defaultLanguage="css"
                 path="style.css"
                 value={code.css}
@@ -547,17 +539,24 @@ const ReactPlayground = ({
               <div
                 ref={previewRef}
                 className="flex-1 bg-white rounded-lg shadow-lg ">
-                <div className="w-full h-full overflow-auto">
-                  <div className="w-full h-full">
-                    {tailwindEnabled && (
-                      <script
-                        async
-                        src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-                    )}
-                    {!tailwindEnabled && code.css && <style>{code.css}</style>}
-                    <DynamicPreview code={code.jsx} />
+                <LiveProvider
+                  key={code.jsx}
+                  code={code.jsx}
+                  scope={scope}
+                  noInline={true}>
+                  <LiveError className="text-red-500 mb-4" />
+                  <div className="w-full h-full overflow-auto">
+                    <div className="w-full h-full">
+                      {/* Inject Tailwind CDN if enabled */}
+                      {tailwindEnabled && (
+                        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+                      )}
+                      {/* Always inject CSS */}
+                      <style>{code.css}</style>
+                      <LivePreview />
+                    </div>
                   </div>
-                </div>
+                </LiveProvider>
               </div>
             </div>
           </div>

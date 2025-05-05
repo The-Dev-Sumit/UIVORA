@@ -275,7 +275,7 @@ const DashboardPage = () => {
               </div>
             </>
           ) : activePage === "profile" ? (
-            <ProfilePage username={myName} />
+            <ProfilePage />
           ) : activePage === "my-components" ? (
             <MyComponents />
           ) : activePage === "help" ? (

@@ -45,7 +45,7 @@ interface ApiError {
   message: string;
 }
 
-const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
+const ProfilePage = () => {
   const { data: session, status, update } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile>({
@@ -62,37 +62,13 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
   const [newSkill, setNewSkill] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const isOwnProfile =
-    !viewUsername ||
-    (session?.user?.email && viewUsername === profile.username);
-
   useEffect(() => {
-    if (viewUsername) {
-      // Viewing someone else's profile
-      fetchUserProfile(viewUsername);
-    } else if (status === "unauthenticated") {
+    if (status === "unauthenticated") {
       router.push("/");
     } else if (status === "authenticated") {
-      // Viewing own profile
       fetchProfileData();
     }
-  }, [status, router, viewUsername]);
-
-  // Fetch other user's profile
-  const fetchUserProfile = async (username: string) => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`/api/users/${username}`);
-      if (response.data) {
-        setProfile(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-      toast.error("Failed to load profile");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [status, router]);
 
   // Fetch profile data
   const fetchProfileData = async () => {
@@ -405,13 +381,11 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
       <div className="max-w-4xl mx-auto bg-gray-800 text-white rounded-lg shadow-lg p-6">
         <div className="flex items-center text-white justify-between mb-6">
           <h1 className="text-3xl text-white lemonada-sem tracking-wider">
-            {isOwnProfile
-              ? "Profile"
-              : `${profile.username || "User"}'s Profile`}
+            {session?.user?.email ? "Profile" : "Please login to view profile"}
           </h1>
-          {isOwnProfile && !isEditing ? (
+          {session?.user?.email && !isEditing ? (
             <EditButton onClick={() => setIsEditing(true)} />
-          ) : isOwnProfile && isEditing ? (
+          ) : session?.user?.email && isEditing ? (
             <div className="flex gap-2">
               <SaveButton
                 handleSave={async () => {
@@ -439,7 +413,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                 ) : (
                   <FaCircleUser className="w-24 h-24 text-gray-400" />
                 )}
-                {isOwnProfile && isEditing && (
+                {session?.user?.email && isEditing && (
                   <label className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
                     <RiCameraAiFill className="w-6 h-6 text-white" />
                     <input
@@ -459,7 +433,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              {isOwnProfile && isEditing ? (
+              {session?.user?.email && isEditing ? (
                 <>
                   <label className="flex items-center font-medium text-gray-300 mb-1">
                     <FaCircleUser className="w-4 h-4 mr-2" />
@@ -501,7 +475,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                 <AiOutlineBook />
                 <span>Bio</span>
               </label>
-              {isOwnProfile && isEditing ? (
+              {session?.user?.email && isEditing ? (
                 <textarea
                   value={profile.bio}
                   onChange={handleBioChange}
@@ -524,7 +498,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                 <FaSkating />
                 <span>Skills</span>
               </h3>
-              {isOwnProfile && isEditing ? (
+              {session?.user?.email && isEditing ? (
                 <div className="space-y-4">
                   <div className="flex gap-2">
                     <input
@@ -578,7 +552,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                 <span>Social Links</span>
               </h3>
               <div className="space-y-4 mt-2">
-                {isOwnProfile && isEditing ? (
+                {session?.user?.email && isEditing ? (
                   <>
                     <div className="flex gap-2 items-center">
                       <div className="flex flex-row items-center justify-center gap-4">
@@ -637,7 +611,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                             {link.platform}
                           </a>
                         </div>
-                        {isOwnProfile && isEditing && (
+                        {session?.user?.email && isEditing && (
                           <button
                             title="Remove Link"
                             onClick={() => handleRemoveLink(link.platform)}

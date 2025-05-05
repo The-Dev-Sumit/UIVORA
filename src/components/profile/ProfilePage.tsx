@@ -60,16 +60,14 @@ const ProfilePage = () => {
   const [newLinkType, setNewLinkType] = useState("");
   const [newLinkUrl, setNewLinkUrl] = useState("");
   const [newSkill, setNewSkill] = useState("");
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/");
-      setLoading(false);
-    } else if (status === "authenticated" && session?.user?.email) {
+    } else if (status === "authenticated") {
       fetchProfileData();
     }
-  }, [status, router, session?.user?.email]);
+  }, [status, router]);
 
   // Fetch profile data
   const fetchProfileData = async () => {
@@ -90,8 +88,6 @@ const ProfilePage = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast.error("Failed to load profile");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -370,14 +366,6 @@ const ProfilePage = () => {
       </g>
     </svg>
   );
-
-  if (loading) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full min-h-screen p-4">

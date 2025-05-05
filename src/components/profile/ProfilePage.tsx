@@ -65,10 +65,11 @@ const ProfilePage = () => {
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/");
-    } else if (status === "authenticated") {
+      setLoading(false);
+    } else if (status === "authenticated" && session?.user?.email) {
       fetchProfileData();
     }
-  }, [status, router]);
+  }, [status, router, session?.user?.email]);
 
   // Fetch profile data
   const fetchProfileData = async () => {
@@ -89,6 +90,8 @@ const ProfilePage = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast.error("Failed to load profile");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -368,7 +371,7 @@ const ProfilePage = () => {
     </svg>
   );
 
-  if (loading || !session?.user?.email) {
+  if (loading) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center">
         <Loader />

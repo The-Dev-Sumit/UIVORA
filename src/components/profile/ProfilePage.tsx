@@ -481,7 +481,9 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                   Email
                 </label>
               </div>
-              <p className="text-gray-300">{profile.email}</p>
+              <p className="text-gray-300">
+                {session?.user?.email || profile.email || "Email not available"}
+              </p>
             </div>
 
             <div className="md:col-span-2">

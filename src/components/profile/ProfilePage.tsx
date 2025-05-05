@@ -330,15 +330,6 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
     }));
   };
 
-  // Save username only if not empty and valid
-  const handleUsernameBlur = async () => {
-    if (!profile.username || profile.username.length < 3) {
-      toast.error("Username must be at least 3 characters");
-      return;
-    }
-    await saveProfileSection({ username: profile.username });
-  };
-
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -480,7 +471,6 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                     type="text"
                     value={profile.username}
                     onChange={handleUsernameChange}
-                    onBlur={handleUsernameBlur}
                     title="Username"
                     placeholder="Enter username"
                     className="w-[80%] px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -652,9 +642,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                         {isOwnProfile && isEditing && (
                           <button
                             title="Remove Link"
-                            onClick={() =>
-                              handleRemoveLink(link.platform)
-                            }
+                            onClick={() => handleRemoveLink(link.platform)}
                             className="text-red-500 hover:text-red-600 px-2 py-1 rounded">
                             <GiCrossMark className="w-4 h-4 cursor-pointer" />
                           </button>

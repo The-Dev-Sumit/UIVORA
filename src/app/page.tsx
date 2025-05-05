@@ -10,6 +10,15 @@ import { RxDiscordLogo } from "react-icons/rx";
 export const metadata: Metadata = {
   title: "Uivora",
   description: "The Ultimate UI Component Library.",
+  keywords: [
+    "Uivora",
+    "UI Component Library",
+    "React Components",
+    "HTML Components",
+    "Open Source",
+    "Tailwind CSS",
+    "Next.js project",
+  ],
 };
 
 const poppins = Poppins({

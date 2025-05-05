@@ -19,9 +19,10 @@ import { MdOutlineLink } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Loader from "@/components/loader/Loader";
 
 interface SocialLink {
-  text: string;
+  platform: string;
   url: string;
 }
 
@@ -226,8 +227,9 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
           return;
         }
 
+        // Use 'platform' instead of 'text' for backend compatibility
         const newLink = {
-          text: newLinkType.trim(),
+          platform: newLinkType.trim(),
           url: validUrl,
         };
 
@@ -268,11 +270,11 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
     }
   };
 
-  const handleRemoveLink = async (text: string) => {
+  const handleRemoveLink = async (platform: string) => {
     try {
       // Create updated links array
       const updatedLinks = profile.socialLinks.filter(
-        (link) => link.text !== text
+        (link) => link.platform !== platform
       );
 
       // First update local state
@@ -317,10 +319,24 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const newUsername = e.target.value;
+    // Minimum 3 characters validation
+    if (newUsername.length < 3 && newUsername.length !== 0) {
+      toast.error("Username must be at least 3 characters");
+      return;
+    }
     setProfile((prev) => ({
       ...prev,
       username: newUsername,
     }));
+  };
+
+  // Save username only if not empty and valid
+  const handleUsernameBlur = async () => {
+    if (!profile.username || profile.username.length < 3) {
+      toast.error("Username must be at least 3 characters");
+      return;
+    }
+    await saveProfileSection({ username: profile.username });
   };
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -389,6 +405,14 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
     </svg>
   );
 
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full min-h-screen p-4">
       <div className="max-w-4xl mx-auto bg-gray-800 text-white rounded-lg shadow-lg p-6">
@@ -456,9 +480,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                     type="text"
                     value={profile.username}
                     onChange={handleUsernameChange}
-                    onBlur={() =>
-                      saveProfileSection({ username: profile.username })
-                    }
+                    onBlur={handleUsernameBlur}
                     title="Username"
                     placeholder="Enter username"
                     className="w-[80%] px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -615,7 +637,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                   {Array.isArray(profile.socialLinks) &&
                     profile.socialLinks.map((link) => (
                       <div
-                        key={link.text}
+                        key={link.platform}
                         className="flex items-center px-2 rounded-lg">
                         <div className="flex items-center justify-center rounded-md py-[.2rem]">
                           <MdOutlineLink className="w-4 h-4 mt-1" />
@@ -624,13 +646,15 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-medium capitalize text-blue-300 hover:text-blue-300 px-2 transition-colors link-underline-social">
-                            {link.text}
+                            {link.platform}
                           </a>
                         </div>
                         {isOwnProfile && isEditing && (
                           <button
                             title="Remove Link"
-                            onClick={() => handleRemoveLink(link.text)}
+                            onClick={() =>
+                              handleRemoveLink(link.platform)
+                            }
                             className="text-red-500 hover:text-red-600 px-2 py-1 rounded">
                             <GiCrossMark className="w-4 h-4 cursor-pointer" />
                           </button>

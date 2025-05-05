@@ -315,18 +315,10 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
     }));
   };
 
-  const handleUsernameChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const newUsername = e.target.value;
-    // Minimum 3 characters validation
-    if (newUsername.length < 3 && newUsername.length !== 0) {
-      toast.error("Username must be at least 3 characters");
-      return;
-    }
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile((prev) => ({
       ...prev,
-      username: newUsername,
+      username: e.target.value,
     }));
   };
 

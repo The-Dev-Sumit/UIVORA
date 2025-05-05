@@ -166,11 +166,14 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
         return;
       }
 
-      const updatedData = {
+      // Only include username if it's being updated
+      const updatedData: any = {
         ...sectionData,
         email: session.user.email,
-        username: profile.username || "",
       };
+      if (sectionData.username !== undefined) {
+        updatedData.username = sectionData.username;
+      }
 
       console.log("Saving section data:", updatedData);
 

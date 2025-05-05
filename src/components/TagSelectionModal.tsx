@@ -62,7 +62,7 @@ const TagSelectionModal: React.FC<TagSelectionModalProps> = ({
                 onSelectTag(tag.id);
                 onClose();
               }}
-              className="w-full flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors">
+              className="w-full flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer">
               <span className="text-xl">{tag.icon}</span>
               <span>{tag.label}</span>
             </button>

@@ -46,7 +46,7 @@ interface ApiError {
 }
 
 const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile>({
     username: "",
@@ -143,6 +143,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
           ...response.data,
         }));
         await fetchProfileData(); // Refresh data after save
+        if (update) await update(); // Refresh session so username updates everywhere
         toast.success("Profile updated successfully");
         setIsEditing(false);
       }
@@ -401,7 +402,9 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
       <div className="max-w-4xl mx-auto bg-gray-800 text-white rounded-lg shadow-lg p-6">
         <div className="flex items-center text-white justify-between mb-6">
           <h1 className="text-3xl text-white lemonada-sem tracking-wider">
-            {isOwnProfile ? "Profile" : `${profile.username}'s Profile`}
+            {isOwnProfile
+              ? "Profile"
+              : `${profile.username || "User"}'s Profile`}
           </h1>
           {isOwnProfile && !isEditing ? (
             <EditButton onClick={() => setIsEditing(true)} />
@@ -472,7 +475,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                 <div className="flex items-center gap-2">
                   <FaCircleUser className="w-4 h-4" />
                   <p className="text-gray-300 delius-unicase-bold">
-                    {profile.username}
+                    {profile.username || "User"}
                   </p>
                 </div>
               )}
@@ -546,7 +549,7 @@ const ProfilePage = ({ username: viewUsername }: { username?: string }) => {
                           title="Remove Skill"
                           onClick={() => handleRemoveSkill(skill)}
                           className="text-red-500 hover:text-red-700">
-                          <RxCross2 className="text-md cursor-pointer" />
+                          <GiCrossMark className="text-md cursor-pointer" />
                         </button>
                       </div>
                     ))}

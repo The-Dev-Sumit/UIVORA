@@ -22,6 +22,7 @@ import MyComponents from "@/components/my-components/MyComponents";
 import Loader from "@/components/loader/Loader";
 import { SiElement } from "react-icons/si";
 import Image from "next/image";
+import { Toaster } from "react-hot-toast";
 
 const DashboardPage = () => {
   const router = useRouter();
@@ -95,195 +96,198 @@ const DashboardPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen w-full">
-      <Sidebar minWidth={200} maxWidth={270}>
-        <button
-          title="Elements Page"
-          onClick={() => router.push("/elements")}
-          className="flex items-start justify-start cursor-pointer w-full">
-          <SiElement className="text-xl text-white" />
-        </button>
-        <div className="py-4">
-          <Image
-            src="/UIVORA.png"
-            alt="UIVORA icon"
-            width={150}
-            height={50}
-            className="mb-10"
-            priority
-          />
-          <div className="space-y-2">
-            <button
-              onClick={() => setActivePage("playground")}
-              className={`w-full text-left px-4 py-2 cursor-pointer rounded-lg tracking-wider ${
-                activePage === "playground"
-                  ? "bg-black/70 w-full text-white"
-                  : "text-gray-300 hover:bg-gray-800"
-              }`}>
-              Playground
-            </button>
-            <button
-              onClick={() => setActivePage("my-components")}
-              className={`w-full text-left px-4 py-2 cursor-pointer rounded-lg tracking-wider ${
-                activePage === "my-components"
-                  ? "bg-black/70 w-full text-white"
-                  : "text-gray-300 hover:bg-gray-800"
-              }`}>
-              My Components
-            </button>
+    <>
+      <Toaster position="top-right" />
+      <div className="flex min-h-screen w-full">
+        <Sidebar minWidth={200} maxWidth={270}>
+          <button
+            title="Elements Page"
+            onClick={() => router.push("/elements")}
+            className="flex items-start justify-start cursor-pointer w-full">
+            <SiElement className="text-xl text-white" />
+          </button>
+          <div className="py-4">
+            <Image
+              src="/UIVORA.png"
+              alt="UIVORA icon"
+              width={150}
+              height={50}
+              className="mb-10"
+              priority
+            />
+            <div className="space-y-2">
+              <button
+                onClick={() => setActivePage("playground")}
+                className={`w-full text-left px-4 py-2 cursor-pointer rounded-lg tracking-wider ${
+                  activePage === "playground"
+                    ? "bg-black/70 w-full text-white"
+                    : "text-gray-300 hover:bg-gray-800"
+                }`}>
+                Playground
+              </button>
+              <button
+                onClick={() => setActivePage("my-components")}
+                className={`w-full text-left px-4 py-2 cursor-pointer rounded-lg tracking-wider ${
+                  activePage === "my-components"
+                    ? "bg-black/70 w-full text-white"
+                    : "text-gray-300 hover:bg-gray-800"
+                }`}>
+                My Components
+              </button>
+            </div>
           </div>
-        </div>
-      </Sidebar>
+        </Sidebar>
 
-      <MainContent>
-        <div className="w-full min-h-screen main-content gap-6">
-          {activePage === "playground" ? (
-            <>
-              <div className="w-full py-1 px-8 flex flex-row gap-16">
-                {/* HTML Section */}
-                <div className="flex flex-col justify-center items-center ml-32">
-                  <button
-                    className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
-                      activeTab === "html"
-                        ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                        : "font-semibold text-white/85"
-                    }`}
-                    onClick={() => {
-                      setActiveTab("html");
-                    }}>
-                    <TiHtml5 className="w-5 h-5 text-red-500" />
-                    <span>html</span>
-                  </button>
-                  <div className="flex flex-row items-center gap-5 mt-4">
+        <MainContent>
+          <div className="w-full min-h-screen main-content gap-6">
+            {activePage === "playground" ? (
+              <>
+                <div className="w-full py-1 px-8 flex flex-row gap-16">
+                  {/* HTML Section */}
+                  <div className="flex flex-col justify-center items-center ml-32">
                     <button
-                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
-                        activeTab === "html" && htmlSubTab === "js"
+                      className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
+                        activeTab === "html"
                           ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
                           : "font-semibold text-white/85"
                       }`}
-                      onClick={() =>
-                        activeTab === "html" && setHtmlSubTab("js")
-                      }
-                      disabled={activeTab !== "html"}>
-                      <TbBrandJavascript className="w-5 h-5 text-yellow-500" />
-                      <span>js</span>
+                      onClick={() => {
+                        setActiveTab("html");
+                      }}>
+                      <TiHtml5 className="w-5 h-5 text-red-500" />
+                      <span>html</span>
                     </button>
-                    <button
-                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
-                        activeTab === "html" && htmlSubTab === "ts"
-                          ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                          : "font-semibold text-white/85"
-                      }`}
-                      onClick={() =>
-                        activeTab === "html" && setHtmlSubTab("ts")
-                      }
-                      disabled={activeTab !== "html"}>
-                      <TbBrandTypescript className="w-5 h-5" />
-                      <span>ts</span>
-                    </button>
-                    <button
-                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold rounded-4xl
+                    <div className="flex flex-row items-center gap-5 mt-4">
+                      <button
+                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
+                          activeTab === "html" && htmlSubTab === "js"
+                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
+                            : "font-semibold text-white/85"
+                        }`}
+                        onClick={() =>
+                          activeTab === "html" && setHtmlSubTab("js")
+                        }
+                        disabled={activeTab !== "html"}>
+                        <TbBrandJavascript className="w-5 h-5 text-yellow-500" />
+                        <span>js</span>
+                      </button>
+                      <button
+                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
+                          activeTab === "html" && htmlSubTab === "ts"
+                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
+                            : "font-semibold text-white/85"
+                        }`}
+                        onClick={() =>
+                          activeTab === "html" && setHtmlSubTab("ts")
+                        }
+                        disabled={activeTab !== "html"}>
+                        <TbBrandTypescript className="w-5 h-5" />
+                        <span>ts</span>
+                      </button>
+                      <button
+                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold rounded-4xl
                         ${
                           htmlUseTailwind
                             ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
                             : "font-semibold text-white/85"
                         }
                       `}
-                      onClick={() => setHtmlUseTailwind((prev) => !prev)}>
-                      <SiTailwindcss className="w-5 h-5 text-blue-400" />
-                      <span>Tailwind CSS</span>
-                    </button>
+                        onClick={() => setHtmlUseTailwind((prev) => !prev)}>
+                        <SiTailwindcss className="w-5 h-5 text-blue-400" />
+                        <span>Tailwind CSS</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
-                {/* React Section */}
-                <div className="flex flex-col justify-center items-center">
-                  <button
-                    className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
-                      activeTab === "react"
-                        ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                        : "font-semibold text-white/85"
-                    }`}
-                    onClick={() => {
-                      setActiveTab("react");
-                    }}>
-                    <FaReact className="w-5 h-5 text-blue-400" />
-                    <span>react</span>
-                  </button>
-                  <div className="flex flex-row items-center gap-5 mt-4">
+                  {/* React Section */}
+                  <div className="flex flex-col justify-center items-center">
                     <button
-                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
-                        activeTab === "react" && reactSubTab === "jsx"
+                      className={`capitalize w-fit flex items-center gap-1 cursor-pointer px-3 py-1 link-underline ${
+                        activeTab === "react"
                           ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
                           : "font-semibold text-white/85"
                       }`}
-                      onClick={() =>
-                        activeTab === "react" && setReactSubTab("jsx")
-                      }
-                      disabled={activeTab !== "react"}>
-                      <TbBrandReact className="w-5 h-5 text-blue-400" />
-                      <span>jsx</span>
+                      onClick={() => {
+                        setActiveTab("react");
+                      }}>
+                      <FaReact className="w-5 h-5 text-blue-400" />
+                      <span>react</span>
                     </button>
-                    <button
-                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
-                        activeTab === "react" && reactSubTab === "tsx"
-                          ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
-                          : "font-semibold text-white/85"
-                      }`}
-                      onClick={() =>
-                        activeTab === "react" && setReactSubTab("tsx")
-                      }
-                      disabled={activeTab !== "react"}>
-                      <TbBrandTypescript className="w-5 h-5" />
-                      <span>tsx</span>
-                    </button>
-                    <button
-                      className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold rounded-4xl
+                    <div className="flex flex-row items-center gap-5 mt-4">
+                      <button
+                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
+                          activeTab === "react" && reactSubTab === "jsx"
+                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
+                            : "font-semibold text-white/85"
+                        }`}
+                        onClick={() =>
+                          activeTab === "react" && setReactSubTab("jsx")
+                        }
+                        disabled={activeTab !== "react"}>
+                        <TbBrandReact className="w-5 h-5 text-blue-400" />
+                        <span>jsx</span>
+                      </button>
+                      <button
+                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 ${
+                          activeTab === "react" && reactSubTab === "tsx"
+                            ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
+                            : "font-semibold text-white/85"
+                        }`}
+                        onClick={() =>
+                          activeTab === "react" && setReactSubTab("tsx")
+                        }
+                        disabled={activeTab !== "react"}>
+                        <TbBrandTypescript className="w-5 h-5" />
+                        <span>tsx</span>
+                      </button>
+                      <button
+                        className={`capitalize px-3 py-1 w-fit link-underline cursor-pointer flex items-center gap-1 font-semibold rounded-4xl
                         ${
                           reactUseTailwind
                             ? "font-semibold border-1 border-amber-400 text-amber-100 px-5 py-1 rounded-4xl"
                             : "font-semibold text-white/85"
                         }
                       `}
-                      onClick={() => setReactUseTailwind((prev) => !prev)}>
-                      <SiTailwindcss className="w-5 h-5 text-blue-400" />
-                      <span>Tailwind CSS</span>
-                    </button>
+                        onClick={() => setReactUseTailwind((prev) => !prev)}>
+                        <SiTailwindcss className="w-5 h-5 text-blue-400" />
+                        <span>Tailwind CSS</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="mt-5 ml-[4vw]">
+                    <ProfileDropdown
+                      username={myName}
+                      onLogout={handleLogout}
+                      onProfileClick={handleProfileClick}
+                      onHelpClick={handleHelpClick}
+                    />
                   </div>
                 </div>
-                <div className="mt-5 ml-[4vw]">
-                  <ProfileDropdown
-                    username={myName}
-                    onLogout={handleLogout}
-                    onProfileClick={handleProfileClick}
-                    onHelpClick={handleHelpClick}
-                  />
-                </div>
-              </div>
 
-              <div className="w-full flex flex-col items-center justify-center">
-                {activeTab === "html" ? (
-                  <HTMLPlayground
-                    useTailwind={htmlUseTailwind}
-                    language={htmlSubTab}
-                  />
-                ) : (
-                  <ReactPlayground
-                    useTailwind={reactUseTailwind}
-                    isTypeScript={reactSubTab === "tsx"}
-                  />
-                )}
-              </div>
-            </>
-          ) : activePage === "profile" ? (
-            <ProfilePage />
-          ) : activePage === "my-components" ? (
-            <MyComponents />
-          ) : activePage === "help" ? (
-            <GetHelp />
-          ) : null}
-        </div>
-      </MainContent>
-    </div>
+                <div className="w-full flex flex-col items-center justify-center">
+                  {activeTab === "html" ? (
+                    <HTMLPlayground
+                      useTailwind={htmlUseTailwind}
+                      language={htmlSubTab}
+                    />
+                  ) : (
+                    <ReactPlayground
+                      useTailwind={reactUseTailwind}
+                      isTypeScript={reactSubTab === "tsx"}
+                    />
+                  )}
+                </div>
+              </>
+            ) : activePage === "profile" ? (
+              <ProfilePage />
+            ) : activePage === "my-components" ? (
+              <MyComponents />
+            ) : activePage === "help" ? (
+              <GetHelp />
+            ) : null}
+          </div>
+        </MainContent>
+      </div>
+    </>
   );
 };
 

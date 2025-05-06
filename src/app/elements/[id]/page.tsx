@@ -57,6 +57,7 @@ const ComponentDetails = () => {
     if (component) {
       if (component.type === "react") {
         if (
+          component.code.tsx ||
           component.metadata?.isTypeScript ||
           component.metadata?.language === "ts"
         ) {
@@ -207,7 +208,11 @@ const ComponentDetails = () => {
       }
     } else {
       // For React components
-      if (component.metadata?.language === "ts") {
+      if (
+        component.code.tsx ||
+        component.metadata?.isTypeScript ||
+        component.metadata?.language === "ts"
+      ) {
         tabs.push(
           <button
             key="tsx"

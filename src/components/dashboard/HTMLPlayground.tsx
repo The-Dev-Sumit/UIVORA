@@ -243,12 +243,12 @@ console.log(user);`,
           </div>
         </div>
       </Split>
-
       <TagSelectionModal
         isOpen={isTagModalOpen}
         onClose={() => setIsTagModalOpen(false)}
         onSelectTag={(selectedTag) => {
           setIsTagModalOpen(false);
+          handleSave(selectedTag);
         }}
       />
     </div>

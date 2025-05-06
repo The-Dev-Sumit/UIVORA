@@ -153,7 +153,7 @@ export default function UserProfilePage() {
                       className="font-medium flex items-center gap-2 capitalize text-blue-300 hover:text-blue-300 px-2 transition-colors ">
                       <MdOutlineLink className="h-4 w-4 mt-1" />
                       <span className="capitalize link-underline-social">
-                        {link.text}
+                        {link.platform}
                       </span>
                     </a>
                   ))}

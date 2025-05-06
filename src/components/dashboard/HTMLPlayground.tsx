@@ -55,14 +55,14 @@ console.log(user);`,
   const handleSave = async (selectedTag: ComponentTag) => {
     try {
       setIsSaving(true);
-      const response = await axios.post("/api/user/components", {
+      toast.loading("Saving component...");
+      const payload = {
         name: "HTML Component",
         type: "html",
         code: {
           html: code.html,
-          css: useTailwind ? "" : code.css,
+          css: code.css,
           js: code.js,
-          language: language,
           useTailwind: useTailwind,
         },
         metadata: {
@@ -71,7 +71,11 @@ console.log(user);`,
           useTailwind: useTailwind,
           tag: selectedTag,
         },
-      });
+      };
+      console.log("Saving HTML component:", payload);
+      const response = await axios.post("/api/user/components", payload);
+
+      toast.dismiss();
 
       if (response.status === 200) {
         toast.success("Component saved successfully!");

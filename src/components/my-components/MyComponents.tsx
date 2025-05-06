@@ -451,7 +451,7 @@ const MyComponents = () => {
                 className="bg-gray-800 rounded-lg overflow-hidden shadow-lg">
                 <div className="p-2 border-b border-gray-900 flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <FaCode className="text-gray-400" />
+                    <FaCode className="text-gray-400 mt-2" />
                     <span className="text-sm text-gray-500">
                       {component.type}
                     </span>

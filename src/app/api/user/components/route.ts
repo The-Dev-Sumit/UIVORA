@@ -34,6 +34,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    console.log("Received component save request:", body);
     const { name, type, code, metadata } = body;
     const tag = metadata?.tag || "all";
 

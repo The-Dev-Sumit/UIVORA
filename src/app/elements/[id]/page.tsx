@@ -31,6 +31,7 @@ interface Component {
   metadata?: {
     language?: string;
     useTailwind?: boolean;
+    isTypeScript?: boolean;
   };
 }
 
@@ -51,6 +52,23 @@ const ComponentDetails = () => {
   useEffect(() => {
     fetchComponent();
   }, [params.id]);
+
+  useEffect(() => {
+    if (component) {
+      if (component.type === "react") {
+        if (
+          component.metadata?.isTypeScript ||
+          component.metadata?.language === "ts"
+        ) {
+          setActiveTab("tsx");
+        } else {
+          setActiveTab("jsx");
+        }
+      } else if (component.type === "html") {
+        setActiveTab("html");
+      }
+    }
+  }, [component]);
 
   const fetchComponent = async () => {
     try {
@@ -235,8 +253,6 @@ const ComponentDetails = () => {
 
     return tabs;
   };
-
-
 
   return (
     <div className="min-h-screen bg-gray-900 p-6">

@@ -49,7 +49,6 @@ interface Component {
   tag?: ComponentTag;
 }
 
-type ComponentSection = "all" | "buttons" | "texts" | "cards" | "backgrounds";
 
 interface LiveComponentsType {
   LiveProvider: ComponentType<any>;
@@ -84,6 +83,13 @@ const ElementsPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const ITEMS_PER_PAGE = 15;
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
   // Calculate component counts for each tag
   const getComponentCounts = () => {
     const counts: Record<ComponentTag, number> = {
@@ -178,6 +184,7 @@ const ElementsPage = () => {
     useRef: React.useRef,
     motion,
     gsap,
+    styled,
   };
 
   const filteredComponents = components.filter((component) => {
@@ -202,6 +209,10 @@ const ElementsPage = () => {
         </button>
       </div>
     );
+  }
+
+  if (loading) {
+    return <Loader />;
   }
 
   return (

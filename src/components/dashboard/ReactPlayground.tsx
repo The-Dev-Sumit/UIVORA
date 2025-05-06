@@ -435,14 +435,22 @@ const ReactPlayground = ({
 
   const handleSave = async (selectedTag: ComponentTag) => {
     try {
+      const codePayload = isTypeScript
+        ? {
+            tsx: code.jsx,
+            css: code.css,
+            useTailwind: initialUseTailwind,
+          }
+        : {
+            jsx: code.jsx,
+            css: code.css,
+            useTailwind: initialUseTailwind,
+          };
+
       const response = await axios.post("/api/user/components", {
         name: "React Component",
         type: "react",
-        code: {
-          jsx: code.jsx,
-          css: initialUseTailwind ? "" : code.css,
-          useTailwind: initialUseTailwind,
-        },
+        code: codePayload,
         metadata: {
           type: "react",
           isTypeScript: isTypeScript,
@@ -505,6 +513,15 @@ const ReactPlayground = ({
                   fontSize: 14,
                   wordWrap: "on",
                   lineNumbers: "on",
+                  autoClosingBrackets: "always",
+                  autoClosingQuotes: "always",
+                  autoClosingOvertype: "always",
+                  autoSurround: "languageDefined",
+                  formatOnType: true,
+                  formatOnPaste: true,
+                  tabCompletion: "on",
+                  suggestOnTriggerCharacters: true,
+                  quickSuggestions: true,
                 }}
               />
             ) : (
@@ -520,12 +537,16 @@ const ReactPlayground = ({
                   fontSize: 14,
                   wordWrap: "on",
                   lineNumbers: "on",
-                  tabSize: 2,
-                  autoIndent: "advanced",
-                  formatOnType: true,
-                  formatOnPaste: true,
                   autoClosingBrackets: "always",
                   autoClosingQuotes: "always",
+                  autoClosingOvertype: "always",
+                  autoSurround: "languageDefined",
+                  formatOnType: true,
+                  formatOnPaste: true,
+                  tabCompletion: "on",
+                  suggestOnTriggerCharacters: true,
+                  quickSuggestions: true,
+                  tabSize: 2,
                 }}
               />
             )}

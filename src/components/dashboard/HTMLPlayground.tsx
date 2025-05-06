@@ -140,6 +140,16 @@ console.log(user);`,
                   fontSize: 14,
                   wordWrap: "on",
                   lineNumbers: "on",
+                  autoClosingBrackets: "always",
+                  autoClosingQuotes: "always",
+                  autoClosingOvertype: "always",
+                  autoSurround: "languageDefined",
+                  formatOnType: true,
+                  formatOnPaste: true,
+                  tabCompletion: "on",
+                  suggestOnTriggerCharacters: true,
+                  quickSuggestions: true,
+                  tabSize: 2,
                 }}
               />
             ) : activeEditor === "css" ? (
@@ -154,6 +164,16 @@ console.log(user);`,
                   fontSize: 14,
                   wordWrap: "on",
                   lineNumbers: "on",
+                  autoClosingBrackets: "always",
+                  autoClosingQuotes: "always",
+                  autoClosingOvertype: "always",
+                  autoSurround: "languageDefined",
+                  formatOnType: true,
+                  formatOnPaste: true,
+                  tabCompletion: "on",
+                  suggestOnTriggerCharacters: true,
+                  quickSuggestions: true,
+                  tabSize: 2,
                 }}
               />
             ) : (
@@ -170,6 +190,16 @@ console.log(user);`,
                   fontSize: 14,
                   wordWrap: "on",
                   lineNumbers: "on",
+                  autoClosingBrackets: "always",
+                  autoClosingQuotes: "always",
+                  autoClosingOvertype: "always",
+                  autoSurround: "languageDefined",
+                  formatOnType: true,
+                  formatOnPaste: true,
+                  tabCompletion: "on",
+                  suggestOnTriggerCharacters: true,
+                  quickSuggestions: true,
+                  tabSize: 2,
                 }}
               />
             )}
@@ -211,9 +241,14 @@ console.log(user);`,
                       </style>
                       ${
                         language === "ts"
-                          ? '<script src="https://unpkg.com/typescript@latest/lib/typescriptServices.js"></script>'
+                          ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/typescript/5.8.2/typescript.min.js"></script>'
                           : ""
                       }
+                      <script src="<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/TextPlugin.min.js" integrity="sha512-8BkFnMa5pqmphA7XoSbkjP2qX7Gqlkel2C+p1g1AH1tW4cBJs2tumC0Zn9eNRBOKbe3dW9OtbYh/vpkGuZNTMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>"></script>
+
+                      <script src="<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js" integrity="sha512-wOeEC+9qERAzhliwBFPDb6t8TiFFxdxG8vhK/Ygs7TuC44bpg8pg/X2/U/u+0X4fK05wb9id1EIipnF02+CFQw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>"></script>
+
+                      <script src="<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>"></script>
                     </head>
                     <body>
                       ${code.html}

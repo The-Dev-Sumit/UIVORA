@@ -276,17 +276,7 @@ const ComponentDetails = () => {
                 <Link
                   href={`/elements/user-profile/${component.username}`}
                   className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
-                  {component.userImage ? (
-                    <Image
-                      src={component.userImage}
-                      alt={component.username}
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <FaUser className="w-4 h-4" />
-                  )}
+                  <FaUser className="w-4 h-4" />
                   <span>{component.username}</span>
                 </Link>
                 <div className="flex items-center gap-2">

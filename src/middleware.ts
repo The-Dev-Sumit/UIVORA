@@ -42,10 +42,19 @@ export async function middleware(request: NextRequest) {
     isProtectedRoute
   );
 
-  // Agar protected route hai aur user logged in nahi hai
-  if (isProtectedRoute && !token) {
+  // Check if token exists and has an identifier (like id or sub)
+  // This is more robust than just checking !token, in case getToken returns an empty object on error.
+  const isAuthenticated = token && (token.id || token.sub);
+  console.log(
+    "[Middleware] isAuthenticated based on token.id or token.sub:",
+    isAuthenticated
+  );
+
+  // if (isProtectedRoute && !token) { // Old condition
+  if (isProtectedRoute && !isAuthenticated) {
+    // New condition
     console.log(
-      "[Middleware] PROTECTED ROUTE (true) AND TOKEN (false). Redirecting to login for path:",
+      "[Middleware] PROTECTED ROUTE (true) AND IS_AUTHENTICATED (false). Redirecting to login for path:",
       pathname
     );
     // root page pe redirect karo
@@ -53,9 +62,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isProtectedRoute && token) {
+  // if (isProtectedRoute && token) { // Old condition
+  if (isProtectedRoute && isAuthenticated) {
+    // New condition
     console.log(
-      "[Middleware] PROTECTED ROUTE (true) AND TOKEN (true). Allowing access for path:",
+      "[Middleware] PROTECTED ROUTE (true) AND IS_AUTHENTICATED (true). Allowing access for path:",
       pathname
     );
   }
@@ -72,5 +83,5 @@ export async function middleware(request: NextRequest) {
 
 // Configure karo ki konse routes pe middleware chalega
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/user/:path*"],
+  matcher: ["/dashboard", "/dashboard/:path*", "/api/user/:path*"],
 };

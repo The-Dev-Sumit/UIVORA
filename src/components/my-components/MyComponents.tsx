@@ -52,20 +52,54 @@ const MyComponents = () => {
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<ComponentTag | null>(null);
 
+  const devMode = process.env.NEXT_PUBLIC_DEV_MODE;
+
   const handleAnimationEnd = (isAnimating: boolean) => {
     setIsAnimating(isAnimating);
     console.log(`Animation ${isAnimating ? "started" : "ended"}`);
   };
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
+    if (devMode === "skip_auth") {
+      setComponents([
+        {
+          _id: "mock_html_1",
+          name: "Mock HTML Card",
+          type: "html",
+          code: {
+            html: "<div><h1>Mock HTML Card</h1><p>This is a mock component.</p></div>",
+            css: "div { border: 1px solid #ccc; padding: 10px; } h1 { color: blue; }",
+            js: 'console.log("Mock HTML loaded")',
+            language: "js",
+            useTailwind: false,
+            tag: "cards",
+          },
+        },
+        {
+          _id: "mock_react_1",
+          name: "Mock React Button",
+          type: "react",
+          code: {
+            jsx: '() => <button onClick={() => alert("Mock React Clicked!")}>Mock React Button</button>',
+            useTailwind: true,
+            tag: "buttons",
+          },
+        },
+      ]);
+      setLoading(false);
+      setError(null);
     } else if (status === "authenticated") {
       fetchComponents();
+    } else if (status === "unauthenticated") {
+      router.push("/");
     }
-  }, [status, router]);
+  }, [status, router, devMode]);
 
   const fetchComponents = async () => {
+    if (devMode === "skip_auth") {
+      setLoading(false); // Already handled by useEffect
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
@@ -121,6 +155,14 @@ const MyComponents = () => {
   const confirmDelete = async () => {
     if (!componentToDelete) return;
 
+    if (devMode === "skip_auth") {
+      setComponents((prev) => prev.filter((c) => c._id !== componentToDelete));
+      toast.success("Mock component deleted!");
+      setDeleteModalOpen(false);
+      setComponentToDelete(null);
+      return;
+    }
+
     try {
       await axios.delete(`/api/user/components?id=${componentToDelete}`);
       toast.success("Component deleted successfully");
@@ -139,6 +181,27 @@ const MyComponents = () => {
   const handleSaveEdit = async (tagFromModal?: ComponentTag) => {
     if (!editingComponent) return;
     const tagToSave = tagFromModal || selectedTag;
+
+    if (devMode === "skip_auth") {
+      setComponents((prev) =>
+        prev.map((c) =>
+          c._id === editingComponent._id
+            ? {
+                ...editingComponent,
+                code: {
+                  ...editingComponent.code,
+                  tag: tagToSave === null ? undefined : tagToSave,
+                },
+              }
+            : c
+        )
+      );
+      toast.success("Mock component updated!");
+      setEditingComponent(null);
+      setIsTagModalOpen(false); // Close tag modal if open
+      return;
+    }
+
     try {
       const response = await axios.put(
         `/api/user/components?id=${editingComponent._id}`,
@@ -171,7 +234,7 @@ const MyComponents = () => {
     });
   };
 
-  if (status === "loading" || loading) {
+  if (devMode !== "skip_auth" && (status === "loading" || loading)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader />

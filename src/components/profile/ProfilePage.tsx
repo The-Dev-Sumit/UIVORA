@@ -60,17 +60,31 @@ const ProfilePage = () => {
   const [newLinkType, setNewLinkType] = useState("");
   const [newLinkUrl, setNewLinkUrl] = useState("");
   const [newSkill, setNewSkill] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const devMode = process.env.NEXT_PUBLIC_DEV_MODE;
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/");
+    if (devMode === "skip_auth") {
+      setProfile({
+        username: "Dev User",
+        email: "dev@example.com",
+        bio: "This is a mock bio for development purposes.",
+        avatar: "",
+        skills: ["test_skill_1", "test_skill_2"],
+        socialLinks: [{ platform: "website", url: "https://example.com" }],
+      });
+      setIsLoading(false);
     } else if (status === "authenticated") {
       fetchProfileData();
+    } else if (status === "unauthenticated") {
+      router.push("/");
     }
-  }, [status, router]);
+  }, [status, router, devMode]);
 
   // Fetch profile data
   const fetchProfileData = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get("/api/user/profile");
       if (response.data) {
@@ -88,11 +102,19 @@ const ProfilePage = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
       toast.error("Failed to load profile");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   // Save profile data
   const handleSave = async () => {
+    if (devMode === "skip_auth") {
+      toast.success("Profile save simulated in dev mode!");
+      setIsEditing(false);
+      return;
+    }
+
     try {
       if (!session?.user?.email) {
         toast.error("Please login to save profile");
@@ -135,6 +157,14 @@ const ProfilePage = () => {
 
   // Save individual sections
   const saveProfileSection = async (sectionData: Partial<UserProfile>) => {
+    if (devMode === "skip_auth") {
+      toast.success("Section save simulated in dev mode!");
+      if (sectionData.skills) {
+        setProfile((prev) => ({ ...prev, skills: sectionData.skills! }));
+      }
+      return;
+    }
+
     try {
       if (!session?.user?.email) {
         toast.error("Please login to save profile");
@@ -175,6 +205,12 @@ const ProfilePage = () => {
   const handleAddSkill = async () => {
     if (newSkill && !profile.skills?.includes(newSkill)) {
       const updatedSkills = [...(profile.skills || []), newSkill];
+      if (devMode === "skip_auth") {
+        setProfile((prev) => ({ ...prev, skills: updatedSkills }));
+        setNewSkill("");
+        toast.success("Mock skill added!");
+        return;
+      }
       await saveProfileSection({ skills: updatedSkills });
       setNewSkill("");
     }
@@ -183,39 +219,43 @@ const ProfilePage = () => {
   const handleRemoveSkill = async (skillToRemove: string) => {
     const updatedSkills =
       profile.skills?.filter((skill) => skill !== skillToRemove) || [];
+    if (devMode === "skip_auth") {
+      setProfile((prev) => ({ ...prev, skills: updatedSkills }));
+      toast.success("Mock skill removed!");
+      return;
+    }
     await saveProfileSection({ skills: updatedSkills });
   };
 
   const handleAddLink = async () => {
     if (newLinkType && newLinkUrl) {
+      let validUrl = newLinkUrl.trim();
+      if (!validUrl.startsWith("http://") && !validUrl.startsWith("https://")) {
+        validUrl = `https://${validUrl}`;
+      }
+
       try {
-        // Add https:// if not present and validate URL format
-        let validUrl = newLinkUrl.trim();
-        if (
-          !validUrl.startsWith("http://") &&
-          !validUrl.startsWith("https://")
-        ) {
-          validUrl = `https://${validUrl}`;
-        }
+        new URL(validUrl);
+      } catch (error) {
+        toast.error("Please enter a valid website URL");
+        return;
+      }
 
-        // Basic URL validation
-        try {
-          new URL(validUrl);
-        } catch (error) {
-          toast.error("Please enter a valid website URL");
-          return;
-        }
+      const newLink = {
+        platform: newLinkType.trim(),
+        url: validUrl,
+      };
+      const updatedLinks = [...(profile.socialLinks || []), newLink];
 
-        // Use 'platform' instead of 'text' for backend compatibility
-        const newLink = {
-          platform: newLinkType.trim(),
-          url: validUrl,
-        };
+      if (devMode === "skip_auth") {
+        setProfile((prev) => ({ ...prev, socialLinks: updatedLinks }));
+        setNewLinkType("");
+        setNewLinkUrl("");
+        toast.success("Mock link added!");
+        return;
+      }
 
-        // Create updated links array
-        const updatedLinks = [...(profile.socialLinks || []), newLink];
-
-        // Then save to server
+      try {
         const response = await axios.put("/api/user/profile", {
           username: profile.username,
           bio: profile.bio || "",
@@ -225,7 +265,6 @@ const ProfilePage = () => {
         });
 
         if (response.data) {
-          // Update with server response
           setProfile((prev) => ({
             ...prev,
             socialLinks: Array.isArray(response.data.socialLinks)
@@ -250,26 +289,26 @@ const ProfilePage = () => {
   };
 
   const handleRemoveLink = async (platform: string) => {
-    try {
-      // Create updated links array
-      const updatedLinks = profile.socialLinks.filter(
-        (link) => link.platform !== platform
-      );
+    const updatedLinks =
+      profile.socialLinks?.filter((link) => link.platform !== platform) || [];
+    if (devMode === "skip_auth") {
+      setProfile((prev) => ({ ...prev, socialLinks: updatedLinks }));
+      toast.success("Mock link removed!");
+      return;
+    }
 
-      // First update local state
+    try {
       setProfile((prev) => ({
         ...prev,
         socialLinks: updatedLinks,
       }));
 
-      // Then save to server
       const response = await axios.put("/api/user/profile", {
         username: profile.username,
         socialLinks: updatedLinks,
       });
 
       if (response.data) {
-        // Update with server response
         setProfile((prev) => ({
           ...prev,
           socialLinks: Array.isArray(response.data.socialLinks)
@@ -281,7 +320,6 @@ const ProfilePage = () => {
     } catch (error: any) {
       console.error("Error removing link:", error);
       toast.error(error.response?.data?.error || "Failed to remove link");
-      // Revert local state on error
       await fetchProfileData();
     }
   };
@@ -366,6 +404,14 @@ const ProfilePage = () => {
       </g>
     </svg>
   );
+
+  if (isLoading && devMode !== "skip_auth") {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-800">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen p-4">

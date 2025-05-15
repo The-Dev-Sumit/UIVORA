@@ -38,11 +38,13 @@ const DashboardPage = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState<string | null>(null);
 
+  const devMode = process.env.NEXT_PUBLIC_DEV_MODE;
+
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (devMode !== "skip_auth" && status === "unauthenticated") {
       router.replace("/");
     }
-  }, [status, router]);
+  }, [status, router, devMode]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -66,8 +68,13 @@ const DashboardPage = () => {
 
     if (status === "authenticated") {
       fetchUserData();
+    } else if (devMode === "skip_auth") {
+      setMyName("Dev User");
+      console.log(
+        "Dashboard running in skip_auth mode. User data will be mocked or defaults."
+      );
     }
-  }, [status, router]);
+  }, [status, router, devMode]);
 
   const handleLogout = async () => {
     try {
@@ -86,8 +93,10 @@ const DashboardPage = () => {
     setActivePage("help");
   };
 
-  // Loading ya authentication nahi hai to loading state dikhao
-  if (status === "loading" || status === "unauthenticated") {
+  if (
+    devMode !== "skip_auth" &&
+    (status === "loading" || status === "unauthenticated")
+  ) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-800">
         <Loader />

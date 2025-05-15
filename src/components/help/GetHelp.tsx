@@ -183,11 +183,13 @@ const GetHelp: React.FC = () => {
     "faq"
   );
 
+  const devMode = process.env.NEXT_PUBLIC_DEV_MODE;
+
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (devMode !== "skip_auth" && status === "unauthenticated") {
       router.push("/");
     }
-  }, [status, router]);
+  }, [status, router, devMode]);
 
   return (
     <div className="w-full min-h-screen p-4">

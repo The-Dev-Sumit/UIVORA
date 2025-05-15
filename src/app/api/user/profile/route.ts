@@ -64,7 +64,20 @@ export async function PUT(request: Request) {
     const data = await request.json();
     console.log("Received data:", data);
 
-    await dbConnect();
+    // Validate required fields
+    if (!data.email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    }
+
+    try {
+      await dbConnect();
+    } catch (error) {
+      console.error("Database connection error:", error);
+      return NextResponse.json(
+        { error: "Database connection failed" },
+        { status: 500 }
+      );
+    }
 
     // Get user data
     const user = await User.findOne({ email: session.user.email });
@@ -88,6 +101,26 @@ export async function PUT(request: Request) {
         socialLinks: [],
         skills: [],
       });
+    }
+
+    // Validate social links
+    if (Array.isArray(data.socialLinks)) {
+      for (const link of data.socialLinks) {
+        if (!link.platform || !link.url) {
+          return NextResponse.json(
+            { error: "Invalid social link format" },
+            { status: 400 }
+          );
+        }
+        try {
+          new URL(link.url);
+        } catch (e) {
+          return NextResponse.json(
+            { error: `Invalid URL in social link: ${link.url}` },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     // Update profile data

@@ -10,6 +10,8 @@ UIVORA is a Nextjs + Typescript Project. An **Open Source** playground for creat
 
 Welcome to **UIVORA!** This is a platform for coders where users can log in, create reusable components, and share them with others. You can create and save components like animated buttons, cards, and other UI elements, and other users can easily reuse them in their own code.
 
+[UIVORA](https://uivora.vercel.app).
+
 # Tech Used
 
 ![Static Badge](https://img.shields.io/badge/next-%234A102A?logo=nextdotjs)
@@ -22,6 +24,9 @@ Welcome to **UIVORA!** This is a platform for coders where users can log in, cre
 ![Static Badge](https://img.shields.io/badge/gsap-%234A102A?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/react_icons-%234A102A?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/framer_motion-%234A102A?style=for-the-badge)
+
+# Preview
+![uivora homepage](https://github.com/user-attachments/assets/c82f35db-f4aa-4e9d-ad89-e7f58c02734a)
 
 
  # Contribution Guidelines

@@ -15,7 +15,7 @@ import { TbBrandTypescript } from "react-icons/tb";
 import { FaCss3 } from "react-icons/fa6";
 import { SiTailwindcss } from "react-icons/si";
 import { TbBrandReact } from "react-icons/tb";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import ProfilePage from "@/components/profile/ProfilePage";
 import GetHelp from "@/components/help/GetHelp";
 import MyComponents from "@/components/my-components/MyComponents";
@@ -77,12 +77,7 @@ const DashboardPage = () => {
   }, [status, router, devMode]);
 
   const handleLogout = async () => {
-    try {
-      await axios.get("/api/auth/logout");
-      router.replace("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+    await signOut({ callbackUrl: "/" });
   };
 
   const handleProfileClick = () => {

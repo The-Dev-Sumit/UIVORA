@@ -358,8 +358,8 @@ const ReactPlayground = ({
         ? defaultTSXWithTailwind
         : defaultTSXWithCSS
       : initialUseTailwind
-      ? defaultJSXWithTailwind
-      : defaultJSXWithCSS,
+        ? defaultJSXWithTailwind
+        : defaultJSXWithCSS,
     css: defaultCSS,
   });
 
@@ -380,8 +380,8 @@ const ReactPlayground = ({
           ? defaultTSXWithTailwind
           : defaultTSXWithCSS
         : initialUseTailwind
-        ? defaultJSXWithTailwind
-        : defaultJSXWithCSS,
+          ? defaultJSXWithTailwind
+          : defaultJSXWithCSS,
     }));
   }, [isTypeScript, initialUseTailwind]);
 
@@ -571,24 +571,34 @@ const ReactPlayground = ({
                 className="flex-1 bg-white rounded-lg shadow-lg ">
                 <LiveProvider
                   key={code.jsx + tailwindEnabled + code.css}
-                  code={`
-                    ${
-                      code.css
-                        ? "const style = document.createElement('style');\nstyle.textContent = " +
-                          JSON.stringify(code.css) +
-                          ";\ndocument.head.appendChild(style);"
-                        : ""
-                    }
-                    ${
-                      tailwindEnabled
-                        ? "const tailwindScript = document.createElement('script');\ntailwindScript.src = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';\ndocument.head.appendChild(tailwindScript);"
-                        : ""
-                    }
-                    const style2 = document.createElement('style');
-                    style2.textContent = 'html, body, #root, #root > div, #root > div > div { width: 100% !important; height: 100% !important; min-height: 100% !important; margin: 0; padding: 0; box-sizing: border-box; }';
-                    document.head.appendChild(style2);
-                    ${code.jsx}
-                    `}
+                  code={
+                    `const resetStyle = document.createElement('style');\n` +
+                    `resetStyle.textContent = ` +
+                    JSON.stringify(
+                      "html { font-size: 12px; }\n" +
+                        "html, body, #root, #root > div, #root > div > div {\n" +
+                        "  width: 100% !important;\n" +
+                        "  height: 100% !important;\n" +
+                        "  min-height: 100% !important;\n" +
+                        "  margin: 0;\n" +
+                        "  padding: 0;\n" +
+                        "  box-sizing: border-box;\n" +
+                        "  background: white;\n" +
+                        "}\n" +
+                        "h1, h2, h3, h4, h5, h6 { margin: 0; font-size: 2rem; }\n" +
+                        "img, video, canvas, svg { max-width: 100%; height: auto; }\n",
+                    ) +
+                    `;\ndocument.head.appendChild(resetStyle);\n` +
+                    (code.css
+                      ? "const style = document.createElement('style');\nstyle.textContent = " +
+                        JSON.stringify(code.css) +
+                        ";\ndocument.head.appendChild(style);\n"
+                      : "") +
+                    (tailwindEnabled
+                      ? "const tailwindScript = document.createElement('script');\ntailwindScript.src = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';\ndocument.head.appendChild(tailwindScript);\n"
+                      : "") +
+                    code.jsx
+                  }
                   scope={scope}
                   noInline={true}>
                   <LiveError className="text-red-500 mb-4" />

@@ -187,7 +187,7 @@ console.log(user);`,
                 theme="vs-dark"
                 options={{
                   minimap: { enabled: false },
-                  fontSize: 14,
+                  fontSize: 12,
                   wordWrap: "on",
                   lineNumbers: "on",
                   autoClosingBrackets: "always",
@@ -207,10 +207,13 @@ console.log(user);`,
         </div>
 
         {/* Right side - Preview ka section */}
-        <div className="h-[35rem]">
-          <div className="h-full border rounded-lg bg-white overflow-hidden flex flex-col">
+        <div className="h-140 flex items-center justify-center">
+          <div
+            className="border rounded-lg bg-white shadow-lg flex flex-col"
+            style={{ width: 580, height: 560, minWidth: 320, minHeight: 560 }}
+          >
             <div className="bg-gray-800 text-white px-4 py-2 rounded-t-lg flex justify-between">
-              <span>Preview </span>
+              <span>Preview</span>
               <button
                 onClick={() => setIsTagModalOpen(true)}
                 className="flex items-center gap-2 cursor-pointer text-white ">
@@ -218,9 +221,10 @@ console.log(user);`,
                 Save
               </button>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 w-full h-full">
               <iframe
                 className="w-full h-full"
+                style={{ border: "none", minHeight: 0, minWidth: 0 }}
                 srcDoc={`<!DOCTYPE html>
                   <html>
                     <head>
@@ -230,13 +234,30 @@ console.log(user);`,
                           : ""
                       }
                       <style>
-                          html, body {
-                              margin: 0;
-                              padding: 0;
-                              width: 100%;
-                              height: 100%;
-                              box-sizing: border-box;
-                            }
+                        html {
+                          font-size: 10px;
+                        }
+                          
+                       * {
+                          margin: 0;
+                          padding: 0;
+                          width: 100%;
+                          height: 100%;
+                          min-width: 0;
+                          min-height: 0;
+                          box-sizing: border-box;
+                          background: white;
+                        }
+                        img, video, canvas, svg {
+                          max-width: 100%;
+                          height: auto;
+                        }
+                        #__webbox-root {
+                          width: 100%;
+                          height: 100%;
+                          min-width: 0;
+                          min-height: 0;
+                        }
                         ${code.css}
                       </style>
                       ${
@@ -245,15 +266,14 @@ console.log(user);`,
                           : ""
                       }
                       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-
                       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/SplitText.min.js"></script>
-
                       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/TextPlugin.min.js"></script>
-
                       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Flip.min.js"></script>
                     </head>
                     <body>
-                      ${code.html}
+                      <div id="__webbox-root">
+                        ${code.html}
+                      </div>
                       <script${
                         language === "ts" ? ' type="text/typescript"' : ""
                       }>

@@ -49,7 +49,6 @@ interface Component {
   tag?: ComponentTag;
 }
 
-
 interface LiveComponentsType {
   LiveProvider: ComponentType<any>;
   LivePreview: ComponentType<any>;
@@ -70,7 +69,7 @@ const LiveComponents = lazy(() =>
         LiveError: mod.LiveError,
       });
     },
-  }))
+  })),
 );
 
 const ElementsPage = () => {
@@ -95,16 +94,16 @@ const ElementsPage = () => {
     const counts: Record<ComponentTag, number> = {
       all: components.length,
       buttons: components.filter(
-        (c) => c.tag === "buttons" || c.metadata?.tag === "buttons"
+        (c) => c.tag === "buttons" || c.metadata?.tag === "buttons",
       ).length,
       texts: components.filter(
-        (c) => c.tag === "texts" || c.metadata?.tag === "texts"
+        (c) => c.tag === "texts" || c.metadata?.tag === "texts",
       ).length,
       cards: components.filter(
-        (c) => c.tag === "cards" || c.metadata?.tag === "cards"
+        (c) => c.tag === "cards" || c.metadata?.tag === "cards",
       ).length,
       backgrounds: components.filter(
-        (c) => c.tag === "backgrounds" || c.metadata?.tag === "backgrounds"
+        (c) => c.tag === "backgrounds" || c.metadata?.tag === "backgrounds",
       ).length,
     };
     return counts;
@@ -117,7 +116,7 @@ const ElementsPage = () => {
       setLoading(true);
       setError("");
       const response = await axios.get(
-        `/api/components/public?page=${pageNum}&limit=${ITEMS_PER_PAGE}`
+        `/api/components/public?page=${pageNum}&limit=${ITEMS_PER_PAGE}`,
       );
       const data = response.data;
 
@@ -273,7 +272,7 @@ const ElementsPage = () => {
                           <html>
                             <head>
                               <style>
-                                html, body {
+                                * {
                                   margin: 0;
                                   padding: 0;
                                   width: 100%;
@@ -316,27 +315,35 @@ const ElementsPage = () => {
                           }: LiveComponentsType) => (
                             <LiveProvider
                               key={component._id}
-                              code={`
-                                ${
-                                  component.code.css
-                                    ? `const style = document.createElement('style');
-                                      style.textContent = \`${component.code.css}\`;
-                                      document.head.appendChild(style);`
-                                    : ""
-                                }
-                                ${
-                                  component.metadata?.useTailwind
-                                    ? `const tailwindScript = document.createElement('script');
-                                      tailwindScript.src = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';
-                                      document.head.appendChild(tailwindScript);`
-                                    : ""
-                                }
-                                
-                                function ReadyComponent() {
-                                  ${component.code.jsx || ""}
-                                }
-                                render(<ReadyComponent />);
-                              `}
+                              code={
+                                // CSS reset and scaling for preview box
+                                `const resetStyle = document.createElement('style');\n` +
+                                `resetStyle.textContent = ` +
+                                JSON.stringify(
+                                  "html { font-size: 10px; }\n" +
+                                    "* {\n" +
+                                    "  width: 100% !important;\n" +
+                                    "  height: 100% !important;\n" +
+                                    "  min-height: 100% !important;\n" +
+                                    "  margin: 0;\n" +
+                                    "  padding: 0;\n" +
+                                    "  box-sizing: border-box;\n" +
+                                    "  background: white;\n" +
+                                    "}\n" +
+                                    "h1, h2, h3, h4, h5, h6 { margin: 0; font-size: 2rem; }\n" +
+                                    "img, video, canvas, svg { max-width: 100%; height: auto; }\n",
+                                ) +
+                                `;\ndocument.head.appendChild(resetStyle);\n` +
+                                (component.code.css
+                                  ? "const style = document.createElement('style');\nstyle.textContent = " +
+                                    JSON.stringify(component.code.css) +
+                                    ";\ndocument.head.appendChild(style);\n"
+                                  : "") +
+                                (component.metadata?.useTailwind
+                                  ? "const tailwindScript = document.createElement('script');\ntailwindScript.src = 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4';\ndocument.head.appendChild(tailwindScript);\n"
+                                  : "") +
+                                `function ReadyComponent() {\n${component.code.jsx || ""}\n}\nrender(<ReadyComponent />);\n`
+                              }
                               scope={{
                                 ...scope,
                                 React,

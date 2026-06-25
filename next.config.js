@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -40,13 +37,6 @@ const nextConfig = {
         ],
       },
     ];
-  },
-  serverRuntimeConfig: {
-    nextAuth: {
-      providers: ["github", "google"],
-      url: process.env.NEXTAUTH_URL,
-      secret: process.env.NEXTAUTH_SECRET,
-    },
   },
 };
 

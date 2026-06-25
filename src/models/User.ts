@@ -60,17 +60,17 @@ const userSchema = new mongoose.Schema<IUser>(
 );
 
 // Password ko save karne se pehle hash karo
-userSchema.pre<IUser>("save", async function (next) {
+userSchema.pre<IUser>("save", async function () {
   if (!this.isModified("password") || this.isOAuthUser || !this.password)
-    return next();
+    return;
 
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
-    next();
+    
   } catch (error) {
-    next(error as Error);
+    throw error;
   }
 });
 
